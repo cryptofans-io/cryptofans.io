@@ -61,7 +61,7 @@ h1, h2 {
   position: relative;
   height: 300px;
 }
-
+/* modal */
 .overlay {
   position: fixed;
   top: 0;
@@ -82,6 +82,7 @@ h1, h2 {
   max-width: 480px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   position: relative;
+  z-index: 100000;
 }
 .close-button {
   position: absolute;

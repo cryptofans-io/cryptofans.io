@@ -9,8 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&amp;display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.5.2/web3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-  <script src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
-  <script src="https://exdc.cc/sdk.js" type="module"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
+  <script id="exdc" src="https://exdc.cc/sdk.js" type="module"></script>
   <link rel="stylesheet" href="/styles/styles.css">
   <link rel="stylesheet" href="/styles/myshop.css">
   <script src="/anim.js"></script>
@@ -18,6 +18,16 @@
 <body>
   <embed type="text/html" src="/components/nav.html" class="embed-nav">
   <div class="container">
+
+    <div class="overlay" id="pay-modal">
+      <div class="popup">
+        <h2>Buy Subscription</h2>
+        <p>5 USDC / 28 days + 5 EXDC to create a new contract</p>
+        <br>
+        <button class="btn" id="buyButton">Buy</button>
+      </div>
+    </div>
+
     <h1>Shop Configuration</h1>
     
     <form class="shop-config" id="shop-config-form">
@@ -67,24 +77,39 @@
   <embed type="text/html" src="/components/footer.html" class="embed-footer">
 
   <script>
-
-    // Web3 integration
-    window.addEventListener('load', async () => {
-      if (window.ethereum) {
-        window.web3 = new Web3(ethereum);
-        try {
-          await ethereum.enable();
-          console.log("Web3 initialized!");
-        } catch (error) {
-          console.error("User denied account access");
+    const validateSubscription = async () => {
+      try {
+        const subscription = await exdc.getCryptoFansAddress()
+        const info = await exdc.getServicePaymentInfo(subscription)
+        console.info('subscription', subscription, info)
+        // console.info('subscription', subscription)
+        const isServiceValid = await exdc.checkServiceValid(subscription)
+        console.info('isvalid', isServiceValid)
+        if(isServiceValid === true) {
+          document.getElementById("pay-modal").className = "hidden";
         }
-      } else if (window.web3) {
-        window.web3 = new Web3(web3.currentProvider);
-        console.log("Web3 initialized!");
-      } else {
-        console.log('Non-Ethereum browser detected. Consider trying MetaMask!');
+      } catch(err) {
+        console.error('err', err)
       }
-    });
+    }
+    const buyButton = document.getElementById("buyButton")
+    buyButton.addEventListener("click", async ()=>{
+      const subscription = await exdc.getCryptoFansAddress()
+      const smart = await exdc.buyServiceSmart(subscription)
+      const isServiceValid = await exdc.checkServiceValid()
+      if(isServiceValid === true) {
+        document.getElementById("pay-modal").className = "hidden";
+      }
+    })
+    
+    var script = document.querySelector('#exdc');
+    script.addEventListener('load', function() {
+      window.exdc = new EXDC_SDK()
+      exdc.checkMetaMask().then(()=>{
+        validateSubscription()
+      })
+    })
+  
 
     // Subscription tier management
     let tiers = [];
