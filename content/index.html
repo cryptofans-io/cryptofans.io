@@ -1,0 +1,347 @@
+<html><head><base href="/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Management - CryptoFans</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.5.2/web3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #1FC7D4;
+      --secondary-color: #7645D9;
+      --background-color: #08060B;
+      --text-color: #F4EEFF;
+      --accent-color: #ED4B9E;
+      --usdc-color: #2775CA;
+      --card-background: #27262c;
+      --card-border: #383241;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Kanit', sans-serif;
+    }
+    body, html {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      height: 100%;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: rgba(8, 6, 11, 0.8);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    .nav-links a {
+      color: var(--text-color);
+      text-decoration: none;
+      margin-left: 20px;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover {
+      color: var(--primary-color);
+    }
+    h1 {
+      font-size: 2.5em;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+    }
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .content-card {
+      background-color: var(--card-background);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .content-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .content-type {
+      font-size: 0.8em;
+      color: var(--accent-color);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .content-title {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+    .content-preview {
+      font-size: 0.9em;
+      margin-bottom: 15px;
+    }
+    .content-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9em;
+    }
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .status-published {
+      background-color: #00C853;
+    }
+    .status-draft {
+      background-color: #FFC107;
+    }
+    .status-scheduled {
+      background-color: #2196F3;
+    }
+    .content-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+    .action-btn {
+      background-color: var(--primary-color);
+      color: var(--background-color);
+      border: none;
+      border-radius: 20px;
+      padding: 5px 15px;
+      font-size: 0.9em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .action-btn:hover {
+      background-color: var(--secondary-color);
+    }
+    .new-content-btn {
+      background-color: var(--accent-color);
+      color: var(--text-color);
+      border: none;
+      border-radius: 25px;
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-bottom: 20px;
+    }
+    .new-content-btn:hover {
+      background-color: #ff6bbc;
+    }
+    #animation-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .pancake, .bunny, .coin {
+      position: absolute;
+      pointer-events: none;
+    }
+    .pancake {
+      width: 60px;
+      height: 60px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjMUZDN0Q0Ii8+CjxwYXRoIGQ9Ik00MCA0MEg4OFY4OEg0MFY0MFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTU2IDcySDcyVjg4SDU2Vjc3WiIgZmlsbD0iI0VENEJCRSI+PC9wYXRoPgo8L3N2Zz4=');
+      background-size: contain;
+    }
+    .bunny {
+      width: 80px;
+      height: 80px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjN0M0REZGIi8+CjxwYXRoIGQ9Ik00OCA0OEg4MFY4MEg0OFY0OFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTU2IDY0SDcyVjgwSDU2VjY0WiIgZmlsbD0iI0VENEJDRSI+PC9wYXRoPgo8Y2lyY2xlIGN4PSI1NiIgY3k9IjU2IiByPSI4IiBmaWxsPSIjMDAwMDAwIi8+CjxjaXJjbGUgY3g9IjcyIiBjeT0iNTYiIHI9IjgiIGZpbGw9IiMwMDAwMDAiLz4KPC9zdmc+');
+      background-size: contain;
+    }
+    .coin {
+      width: 40px;
+      height: 40px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjRkZDQjAwIi8+CjxwYXRoIGQ9Ik00MCA0MEg4OFY4OEg0MFY0MFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTYwIDUySEg2OFY3Nkg2MFY1MloiIGZpbGw9IiNGRkE2MDAiLz4KPHBhdGggZD0iTTUyIDYwSDc2VjY4SDUyVjYwWiIgZmlsbD0iI0ZGQTYwMCIvPgo8L3N2Zz4=');
+      background-size: contain;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">CryptoFans</div>
+    <div class="nav-links">
+      <a href="/home">Home</a>
+      <a href="/">Creators</a>
+      <a href="/content">Content</a>
+      <a href="/myshop">My Shop</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Content Management</h1>
+    <a href="/content/add"><button class="new-content-btn">+ Create New Content</button></a>
+    
+    <div class="content-grid">
+      <div class="content-card">
+        <div class="content-type">Article</div>
+        <h3 class="content-title">Summer Fashion Trends 2023</h3>
+        <p class="content-preview">Get ready for the hottest summer trends! From neon colors to oversized accessories...</p>
+        <div class="content-status">
+          <span><span class="status-indicator status-published"></span>Published</span>
+          <span>2 hours ago</span>
+        </div>
+        <div class="content-actions">
+          <button class="action-btn">Edit</button>
+          <button class="action-btn">Unpublish</button>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <div class="content-type">Exclusive Post</div>
+        <h3 class="content-title">Designer Collaboration Sneak Peek</h3>
+        <p class="content-preview">Exclusive behind-the-scenes look at our upcoming designer collaboration...</p>
+        <div class="content-status">
+          <span><span class="status-indicator status-published"></span>Published (Subscriber Only)</span>
+          <span>1 day ago</span>
+        </div>
+        <div class="content-actions">
+          <button class="action-btn">Edit</button>
+          <button class="action-btn">Make Public</button>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <div class="content-type">Video</div>
+        <h3 class="content-title">How to Style Oversized Blazers</h3>
+        <p class="content-preview">Learn 5 different ways to style oversized blazers for any occasion...</p>
+        <div class="content-status">
+          <span><span class="status-indicator status-draft"></span>Draft</span>
+          <span>Last edited 3 days ago</span>
+        </div>
+        <div class="content-actions">
+          <button class="action-btn">Edit</button>
+          <button class="action-btn">Publish</button>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <div class="content-type">Live Stream</div>
+        <h3 class="content-title">Q&A: Ask Me Anything About Fashion</h3>
+        <p class="content-preview">Join me for a live Q&A session where I'll answer all your fashion-related questions...</p>
+        <div class="content-status">
+          <span><span class="status-indicator status-scheduled"></span>Scheduled</span>
+          <span>Starts in 2 days</span>
+        </div>
+        <div class="content-actions">
+          <button class="action-btn">Edit</button>
+          <button class="action-btn">Cancel</button>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <div class="content-type">Poll</div>
+        <h3 class="content-title">Favorite Summer Accessory?</h3>
+        <p class="content-preview">Vote for your favorite summer accessory: Sunglasses, Hat, Beach Bag, or Sandals...</p>
+        <div class="content-status">
+          <span><span class="status-indicator status-published"></span>Active</span>
+          <span>Ends in 5 days</span>
+        </div>
+        <div class="content-actions">
+          <button class="action-btn">View Results</button>
+          <button class="action-btn">End Poll</button>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <div class="content-type">Tutorial</div>
+        <h3 class="content-title">DIY Crop Top from Old T-Shirt</h3>
+        <p class="content-preview">Learn how to upcycle your old t-shirts into trendy crop tops with this easy tutorial...</p>
+        <div class="content-status">
+          <span><span class="status-indicator status-draft"></span>Draft</span>
+          <span>Last edited 1 week ago</span>
+        </div>
+        <div class="content-actions">
+          <button class="action-btn">Edit</button>
+          <button class="action-btn">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="animation-container"></div>
+
+  <script>
+    // PancakeSwap-style animations
+    function createAnimatedElement(className) {
+      const element = document.createElement('div');
+      element.classList.add(className);
+      element.style.left = `${Math.random() * 100}vw`;
+      element.style.top = `-80px`;
+      document.getElementById('animation-container').appendChild(element);
+
+      gsap.to(element, {
+        y: `${window.innerHeight + 80}px`,
+        rotation: Math.random() * 720 - 360,
+        duration: Math.random() * 10 + 5,
+        ease: 'power1.inOut',
+        onComplete: () => {
+          element.remove();
+        }
+      });
+    }
+
+    function animateElements() {
+      setInterval(() => createAnimatedElement('pancake'), 2000);
+      setInterval(() => createAnimatedElement('bunny'), 3000);
+      setInterval(() => createAnimatedElement('coin'), 1500);
+    }
+
+    animateElements();
+
+    // Web3 integration
+    window.addEventListener('load', async () => {
+      if (window.ethereum) {
+        window.web3 = new Web3(ethereum);
+        try {
+          await ethereum.enable();
+          console.log("Web3 initialized!");
+        } catch (error) {
+          console.error("User denied account access");
+        }
+      } else if (window.web3) {
+        window.web3 = new Web3(web3.currentProvider);
+        console.log("Web3 initialized!");
+      } else {
+        console.log('Non-Ethereum browser detected. Consider trying MetaMask!');
+      }
+    });
+
+    // Content management functionality
+    // document.querySelector('.new-content-btn').addEventListener('click', () => {
+    //   // Here you would typically open a modal or navigate to a new content creation page
+    //   alert('Opening new content creation form...');
+    // });
+
+    document.querySelectorAll('.action-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const action = e.target.textContent;
+        const contentTitle = e.target.closest('.content-card').querySelector('.content-title').textContent;
+        alert(`${action} action for "${contentTitle}"`);
+        // Here you would typically call a function to handle the specific action
+      });
+    });
+  </script>
+</body></html>

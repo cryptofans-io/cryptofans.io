@@ -1,0 +1,449 @@
+<html><head><base href="/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop Configuration - CryptoFans</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.5.2/web3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #1FC7D4;
+      --secondary-color: #7645D9;
+      --background-color: #08060B;
+      --text-color: #F4EEFF;
+      --accent-color: #ED4B9E;
+      --usdc-color: #2775CA;
+      --card-background: #27262c;
+      --card-border: #383241;
+      --input-background: #372F47;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Kanit', sans-serif;
+    }
+    body, html {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      height: 100%;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: rgba(8, 6, 11, 0.8);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    .nav-links a {
+      color: var(--text-color);
+      text-decoration: none;
+      margin-left: 20px;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover {
+      color: var(--primary-color);
+    }
+    h1, h2 {
+      font-size: 2.5em;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+    }
+    h2 {
+      font-size: 2em;
+    }
+    .shop-config {
+      background-color: var(--card-background);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--primary-color);
+    }
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background-color: var(--input-background);
+      color: var(--text-color);
+      font-size: 16px;
+    }
+    .btn {
+      background-color: var(--primary-color);
+      color: var(--background-color);
+      border: none;
+      border-radius: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .btn:hover {
+      background-color: var(--secondary-color);
+    }
+    .btn-secondary {
+      background-color: var(--accent-color);
+    }
+    .btn-secondary:hover {
+      background-color: #ff6bbc;
+    }
+    .action-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .subscription-tiers {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;
+    }
+    .tiers-list {
+      flex: 1;
+      background-color: var(--card-background);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 15px;
+    }
+    .tier-item {
+      cursor: pointer;
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: var(--input-background);
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+    .tier-item:hover, .tier-item.active {
+      background-color: var(--secondary-color);
+    }
+    .tier-details {
+      flex: 2;
+      background-color: var(--card-background);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 15px;
+    }
+    .add-tier-btn {
+      margin-top: 10px;
+    }
+    #animation-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .pancake, .bunny, .coin {
+      position: absolute;
+      pointer-events: none;
+    }
+    .pancake {
+      width: 60px;
+      height: 60px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjMUZDN0Q0Ii8+CjxwYXRoIGQ9Ik00MCA0MEg4OFY4OEg0MFY0MFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTU2IDcySDcyVjg4SDU2Vjc3WiIgZmlsbD0iI0VENEJCRSI+PC9wYXRoPgo8L3N2Zz4=');
+      background-size: contain;
+    }
+    .bunny {
+      width: 80px;
+      height: 80px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjN0M0REZGIi8+CjxwYXRoIGQ9Ik00OCA0OEg4MFY4MEg0OFY0OFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTU2IDY0SDcyVjgwSDU2VjY0WiIgZmlsbD0iI0VENEJCRSI+PC9wYXRoPgo8Y2lyY2xlIGN4PSI1NiIgY3k9IjU2IiByPSI4IiBmaWxsPSIjMDAwMDAwIi8+CjxjaXJjbGUgY3g9IjcyIiBjeT0iNTYiIHI9IjgiIGZpbGw9IiMwMDAwMDAiLz4KPC9zdmc+');
+      background-size: contain;
+    }
+    .coin {
+      width: 40px;
+      height: 40px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjRkZDQjAwIi8+CjxwYXRoIGQ9Ik00MCA0MEg4OFY4OEg0MFY0MFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTYwIDUySEg2OFY3Nkg2MFY1MloiIGZpbGw9IiNGRkE2MDAiLz4KPHBhdGggZD0iTTUyIDYwSDc2VjY4SDUyVjYwWiIgZmlsbD0iI0ZGQTYwMCIvPgo8L3N2Zz4=');
+      background-size: contain;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">CryptoFans</div>
+    <div class="nav-links">
+      <a href="/home">Home</a>
+      <a href="/">Creators</a>
+      <a href="/content">Content</a>
+      <a href="/myshop">My Shop</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Shop Configuration</h1>
+    
+    <form class="shop-config" id="shop-config-form">
+      <div class="form-group">
+        <label for="shop-name">Shop Name</label>
+        <input type="text" id="shop-name" name="shop-name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="shop-description">Shop Description</label>
+        <textarea id="shop-description" name="shop-description" rows="4" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="default-currency">Default Currency</label>
+        <select id="default-currency" name="default-currency" required>
+          <option value="EXDC">EXDC</option>
+          <option value="USDC">USDC</option>
+        </select>
+      </div>
+
+      <div class="subscription-tiers">
+        <div class="tiers-list">
+          <h2>Subscription Tiers</h2>
+          <div id="tiers-list-container"></div>
+          <button type="button" class="btn add-tier-btn" id="add-tier-btn">Add Tier</button>
+        </div>
+        <div class="tier-details">
+          <h2>Tier Details</h2>
+          <div id="tier-details-container"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="commission-rate">Commission Rate (%)</label>
+        <input type="number" id="commission-rate" name="commission-rate" min="0" max="100" step="0.1" required>
+      </div>
+
+      <div class="action-buttons">
+        <button type="submit" class="btn" id="save-btn">Save Configuration</button>
+        <button type="button" class="btn btn-secondary" id="cancel-btn">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="animation-container"></div>
+
+  <script>
+    // PancakeSwap-style animations
+    function createAnimatedElement(className) {
+      const element = document.createElement('div');
+      element.classList.add(className);
+      element.style.left = `${Math.random() * 100}vw`;
+      element.style.top = `-80px`;
+      document.getElementById('animation-container').appendChild(element);
+
+      gsap.to(element, {
+        y: `${window.innerHeight + 80}px`,
+        rotation: Math.random() * 720 - 360,
+        duration: Math.random() * 10 + 5,
+        ease: 'power1.inOut',
+        onComplete: () => {
+          element.remove();
+        }
+      });
+    }
+
+    function animateElements() {
+      setInterval(() => createAnimatedElement('pancake'), 2000);
+      setInterval(() => createAnimatedElement('bunny'), 3000);
+      setInterval(() => createAnimatedElement('coin'), 1500);
+    }
+
+    animateElements();
+
+    // Web3 integration
+    window.addEventListener('load', async () => {
+      if (window.ethereum) {
+        window.web3 = new Web3(ethereum);
+        try {
+          await ethereum.enable();
+          console.log("Web3 initialized!");
+        } catch (error) {
+          console.error("User denied account access");
+        }
+      } else if (window.web3) {
+        window.web3 = new Web3(web3.currentProvider);
+        console.log("Web3 initialized!");
+      } else {
+        console.log('Non-Ethereum browser detected. Consider trying MetaMask!');
+      }
+    });
+
+    // Subscription tier management
+    let tiers = [];
+    let selectedTierId = null;
+
+    function addTier(name = '', price = '', duration = '', benefits = '') {
+      const tierId = `tier-${tiers.length}`;
+      const newTier = { id: tierId, name, price, duration, benefits };
+      tiers.push(newTier);
+      renderTiersList();
+      renderTierDetails(tierId);
+    }
+
+    function updateTier(tierId, name, price, duration, benefits) {
+      const index = tiers.findIndex(tier => tier.id === tierId);
+      if (index !== -1) {
+        tiers[index] = { ...tiers[index], name, price, duration, benefits };
+        renderTiersList();
+        renderTierDetails(tierId);
+      }
+    }
+
+    function removeTier(tierId) {
+      tiers = tiers.filter(tier => tier.id !== tierId);
+      renderTiersList();
+      if (selectedTierId === tierId) {
+        selectedTierId = null;
+        renderTierDetails(null);
+      }
+    }
+
+    function renderTiersList() {
+      const container = document.getElementById('tiers-list-container');
+      container.innerHTML = tiers.map(tier => `
+        <div class="tier-item ${tier.id === selectedTierId ? 'active' : ''}" onclick="selectTier('${tier.id}')">
+          ${tier.name}
+        </div>
+      `).join('');
+    }
+
+    function renderTierDetails(tierId) {
+      const container = document.getElementById('tier-details-container');
+      if (!tierId) {
+        container.innerHTML = '<p>Select a tier to view details</p>';
+        return;
+      }
+
+      const tier = tiers.find(t => t.id === tierId);
+      if (!tier) return;
+
+      container.innerHTML = `
+        <div class="form-group">
+          <label for="${tier.id}-name">Tier Name</label>
+          <input type="text" id="${tier.id}-name" value="${tier.name}" onchange="updateTierField('${tier.id}', 'name', this.value)">
+        </div>
+        <div class="form-group">
+          <label for="${tier.id}-price">Price</label>
+          <input type="number" id="${tier.id}-price" value="${tier.price}" onchange="updateTierField('${tier.id}', 'price', this.value)">
+        </div>
+        <div class="form-group">
+          <label for="${tier.id}-duration">Duration (days)</label>
+          <input type="number" id="${tier.id}-duration" value="${tier.duration}" onchange="updateTierField('${tier.id}', 'duration', this.value)">
+        </div>
+        <div class="form-group">
+          <label for="${tier.id}-benefits">Benefits</label>
+          <textarea id="${tier.id}-benefits" rows="3" onchange="updateTierField('${tier.id}', 'benefits', this.value)">${tier.benefits}</textarea>
+        </div>
+        <button type="button" class="btn btn-secondary" onclick="removeTier('${tier.id}')">Remove Tier</button>
+      `;
+    }
+
+    function selectTier(tierId) {
+      selectedTierId = tierId;
+      renderTiersList();
+      renderTierDetails(tierId);
+    }
+
+    function updateTierField(tierId, field, value) {
+      const tier = tiers.find(t => t.id === tierId);
+      if (tier) {
+        tier[field] = value;
+        renderTiersList();
+      }
+    }
+
+    document.getElementById('add-tier-btn').addEventListener('click', () => addTier('New Tier', '0', '30', ''));
+
+    // Form submission
+    document.getElementById('shop-config-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Get form data
+      const shopName = document.getElementById('shop-name').value;
+      const shopDescription = document.getElementById('shop-description').value;
+      const defaultCurrency = document.getElementById('default-currency').value;
+      const commissionRate = document.getElementById('commission-rate').value;
+
+      // Prepare shop configuration object
+      const shopConfig = {
+        name: shopName,
+        description: shopDescription,
+        defaultCurrency,
+        commissionRate,
+        subscriptionTiers: tiers
+      };
+
+      // Here you would typically send this data to your backend or smart contract
+      console.log('Shop configuration to be saved:', shopConfig);
+
+      // Simulating a successful save
+      alert('Shop configuration saved successfully!');
+      
+      // Optionally, redirect to the shop page or refresh the current page
+      // window.location.href = '/shop';
+    });
+
+    // Cancel button
+    document.getElementById('cancel-btn').addEventListener('click', () => {
+      if (confirm('Are you sure you want to cancel? All changes will be lost.')) {
+        window.location.href = '/profile';
+      }
+    });
+
+    // Load existing shop configuration
+    function loadExistingConfig() {
+      // This function would typically fetch the shop configuration from your backend or smart contract
+      // For this example, we'll use mock data
+      const mockConfig = {
+        name: "Fashion Forward",
+        description: "Your one-stop shop for the latest fashion trends and exclusive content.",
+        defaultCurrency: "EXDC",
+        commissionRate: 5,
+        subscriptionTiers: [
+          {name: "Bronze", price: 10, duration: 30, benefits: "Access to basic content"},
+          {name: "Silver", price: 25, duration: 30, benefits: "Access to premium content and weekly newsletter"},
+          {name: "Gold", price: 50, duration: 30, benefits: "All Silver benefits plus monthly live Q&A session"}
+        ]
+      };
+
+      // Populate form fields
+      document.getElementById('shop-name').value = mockConfig.name;
+      document.getElementById('shop-description').value = mockConfig.description;
+      document.getElementById('default-currency').value = mockConfig.defaultCurrency;
+      document.getElementById('commission-rate').value = mockConfig.commissionRate;
+
+      // Add subscription tiers
+      mockConfig.subscriptionTiers.forEach(tier => {
+        addTier(tier.name, tier.price, tier.duration, tier.benefits);
+      });
+
+      // Select the first tier by default
+      if (tiers.length > 0) {
+        selectTier(tiers[0].id);
+      }
+    }
+
+    // Load existing configuration when the page loads
+    loadExistingConfig();
+  </script>
+</body></html>

@@ -1,0 +1,77 @@
+<html><head><base href="https://cryptofans.io/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoFans - Timeline and Chats</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.5.2/web3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <style>
+    /* ... (previous styles remain unchanged) ... */
+
+    .token {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    .token-usdc {
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxNiIgZmlsbD0iIzI3NzVDQSIvPjxwYXRoIGZpbGw9IiNGRkYiIGQ9Ik0xNS45ODcgNS45NzVjLTUuNTI3IDAtMTAuMDEyIDQuNDg2LTEwLjAxMiAxMC4wMTMgMCA1LjUyNiA0LjQ4NSAxMC4wMTIgMTAuMDEyIDEwLjAxMiA1LjUyNiAwIDEwLjAxMi00LjQ4NiAxMC4wMTItMTAuMDEyIDAtNS41MjctNC40ODYtMTAuMDEzLTEwLjAxMi0xMC4wMTN6bS0uODI0IDEzLjc2OGgtMi4yNDl2LS45MjVjLS42MjctLjA3Mi0xLjIyOC0uMjE5LTEuNzQzLS40NThsLjM4NS0xLjQyOGMuNTQ0LjI2NCAxLjE1MS40NzIgMS44NDkuNDcyLjY5OCAwIDEuMDU2LS4yNjQgMS4wNTYtLjcxOCAwLS40NC0uMzczLS43MDUtMS40MTQtMS4wMDMtMS40MjgtLjQxMi0yLjM0MS0uOTktMi4zNDEtMi4xMDggMC0xLjAxNy42ODQtMS44MjMgMS44NzYtMi4wNjR2LS45MjVoMi4yNXYuODc4Yy41MSAwIC45OTguMDczIDEuNDQxLjIxOWwtLjI3OCAxLjM4MmExLjQwMiAxLjQwMiAwIDAwLTEuNTQ4LS4zNDZjLS43ODQuMTktMS4wNTYuNTE3LTEuMDU2LjgyNCAwIC40NC4zOTkuNjU4IDEuNDY4Ljk5IDEuNTYyLjQ1MiAyLjMwMSAxLjA0NCAyLjMwMSAyLjE2MSAwIC45NzctLjcwNSAxLjg4OS0xLjk0OCA2LjExMXYuOTI1bC4wMDEuMDEzem0yLjY3NSAwaDIuMjV2LS45MjVjLjYyNS0uMDcyIDEuMjI2LS4yMTkgMS43NC0uNDU4bC0uMzg1LTEuNDI4Yy0uNTQzLjI2NC0xLjE1LjQ3Mi0xLjg0OC40NzItLjY5OCAwLTEuMDU2LS4yNjQtMS4wNTYtLjcxOCAwLS40NC4zNzMtLjcwNSAxLjQxNC0xLjAwMyAxLjQyOC0uNDEyIDIuMzQtLjk5IDIuMzQtMi4xMDggMC0xLjAxNy0uNjgzLTEuODIzLTEuODc1LTIuMDY0di0uOTI1aC0yLjI1di44NzhjLS41MSAwLS45OTkuMDczLTEuNDQyLjIxOWwuMjc5IDEuMzgyYTEuNDAyIDEuNDAyIDAgMDExLjU0OC0uMzQ2Yy43ODQuMTkgMS4wNTYuNTE3IDEuMDU2LjgyNCAwIC40NC0uMzk5LjY1OC0xLjQ2OC45OS0xLjU2Mi40NTItMi4zMDIgMS4wNDQtMi4zMDIgMi4xNjEgMCAuOTc3LjcwNiAxLjg4OSAxLjk0OSAyLjExMXYuOTM4eiIvPjwvZz48L3N2Zz4=');
+    }
+    .token-btc {
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxNiIgZmlsbD0iI0Y3OTMxQSIvPjxwYXRoIGZpbGw9IiNGRkYiIGZpbGwtcnVsZT0ibm9uemVybyIgZD0iTTIzLjE4OSAxNC4wMmMuMzE0LTIuMDk2LTEuMjgzLTMuMjIzLTMuNDY1LTMuOTc1bC43MDgtMi44MzgtMS43MjgtLjQzLS42OSAyLjc2NWMtLjQ1NC0uMTE0LS45Mi0uMjItMS4zODUtLjMyNmwuNjk1LTIuNzgzTDE1LjU5NiA2bC0uNzA4IDIuODM5Yy0uMzc2LS4wODYtLjc0Ni0uMTctMS4xMDQtLjI2bC4wMDItLjAwOS0yLjM4NC0uNTk1LS40NiAxLjg0NnMxLjI4My4yOTQgMS4yNTYuMzEyYy43MDEuMTc1LjgyNy42MzguODA2IDEuMDA2bC0uODA2IDMuMjM1Yy4wNDguMDEyLjExLjAzLjE4LjA1N2wtLjE4My0uMDQ1LTEuMTMgNC41MzJjLS4wODYuMjEyLS4zMDMuNTMxLS43OTMuNDEuMDE4LjAyNi0xLjI1Ni0uMzEzLTEuMjU2LS4zMTNsLS44NTggMS45NzggMi4yNS41NjFjLjQxOC4xMDUuODI4LjIxNSAxLjIzMS4zMThsLS43MTUgMi44NzIgMS43MjcuNDMuNzA4LTIuODRjLjQ3Mi4xMjcuOTMuMjQ1IDEuMzc4LjM1N2wtLjcwNiAyLjgyOCAxLjcyOC40My43MTUtMi44NjZjMi45NDguNTU4IDUuMTY0LjMzMyA2LjA5Ny0yLjMzMy43NTItMi4xNDYtLjAzNy0zLjM4NS0xLjU4OC00LjE5MiAxLjEzLS4yNiAxLjk4LTEuMDAzIDIuMjA3LTIuNTM4em0tMy45NSA1LjUzOGMtLjUzMyAyLjE0Ny00LjE0OC45ODYtNS4zMi42OTVsLjk1LTMuODA1YzEuMTcyLjI5MyA0LjkyOS44NzIgNC4zNyAzLjExem0uNTM1LTUuNTY5Yy0uNDg3IDEuOTUzLTMuNDk1Ljk2LTQuNDcuNzE3bC44Ni0zLjQ1Yy45NzUuMjQzIDQuMTE4LjY5NiAzLjYxIDIuNzMzeiIvPjwvZz48L3N2Zz4=');
+    }
+    .token-eth {
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxNiIgZmlsbD0iIzYyN0VFQSIvPjxnIGZpbGw9IiNGRkYiIGZpbGwtcnVsZT0ibm9uemVybyI+PHBhdGggZmlsbC1vcGFjaXR5PSIuNjAyIiBkPSJNMTYuNDk4IDR2OC44N2w3LjQ5NyAzLjM1eiIvPjxwYXRoIGQ9Ik0xNi40OTggNEw5IDE2LjIybDcuNDk4LTMuMzV6Ii8+PHBhdGggZmlsbC1vcGFjaXR5PSIuNjAyIiBkPSJNMTYuNDk4IDIxLjk2OHY2LjAyN0wyNCAxNy42MTZ6Ii8+PHBhdGggZD0iTTE2LjQ5OCAyNy45OTV2LTYuMDI4TDkgMTcuNjE2eiIvPjxwYXRoIGZpbGwtb3BhY2l0eT0iLjIiIGQ9Ik0xNi40OTggMjAuNTczbDcuNDk3LTQuMzUzLTcuNDk3LTMuMzQ4eiIvPjxwYXRoIGZpbGwtb3BhY2l0eT0iLjYwMiIgZD0iTTkgMTYuMjJsNy40OTggNC4zNTN2LTcuNzAxeiIvPjwvZz48L2c+PC9zdmc+');
+    }
+    .token-bnb {
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGcgZmlsbD0ibm9uZSI+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiNGM0JBMkYiLz48cGF0aCBmaWxsPSIjRkZGIiBkPSJNMTIuMTE2IDE0LjQwNEwxNiAxMC41MmwzLjg4NiAzLjg4NiAyLjI2LTIuMjZMMTYgNmwtNi4xNDQgNi4xNDQgMi4yNiAyLjI2ek02IDE2bDIuMjYtMi4yNiAyLjI2IDIuMjZMMTAgMTguMjZsLTIuMDEgMi4wMUw2IDE4LjI2IDYgMTZ6bTYuMTE2IDEuNTk2TDE2IDIxLjQ4bDMuODg2LTMuODg2IDIuMjYgMi4yNTlMMTYgMjZsLTYuMTQ0LTYuMTQ0LTIuMjYtMi4yNiAyLjI2LTIuMjYgMi4yNiAyLjI2ek0yMiAxNmwyLjI2LTIuMjZMMjYgMTZsLTIuMjYgMi4yNi0yLjI2IDIuMjU5LTIuMjYtMi4yNiAyLjI2LTIuMjU5ek0xNi4yNiAxNS45OTZsLjAxMi4wMDctLjAxMi4wMDctLjAxMi0uMDA3LjAxMi0uMDA3eiIvPjwvZz48L3N2Zz4=');
+    }
+    .token-ada {
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGcgZmlsbD0ibm9uZSI+PGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiMwMDMzQUQiLz48cGF0aCBmaWxsPSIjRkZGIiBkPSJNMTQuMDMyIDE1LjMwM2MtLjQ2NS0uNTUzLTEuMjEtLjU1MS0xLjY3My4wMDMtLjI0Mi4yOS0uNjk4LjI5LS45MzkgMGwtLjAwMS0uMDAxYy0uNDY0LS41NTMtMS4yMS0uNTU0LTEuNjc2LS4wMDMtLjQ2MS41NDctLjQ2IDEuNDMxLjAwMiAxLjk3OGwzLjI4NCAzLjkwNmMuNDY1LjU1MyAxLjIxLjU1MSAxLjY3My0uMDAzLjI0Mi0uMjkuNjk4LS4yOS45MzkgMGwuMDAxLjAwMWMuNDY0LjU1MyAxLjIxLjU1NCAxLjY3Ni4wMDMuNDYxLS41NDcuNDYtMS40MzEtLjAwMi0xLjk3OGwtMy4yODQtMy45MDZ6bTIuNjAyLTMuMDg2YTEuMiAxLjIgMCAxMS0yLjM5OCAwIDEuMiAxLjIgMCAwMTIuMzk4IDB6bS01LjI2OC43ODhhMS4yIDEuMiAwIDExLTIuMzk4IDAgMS4yIDEuMiAwIDAxMi4zOTggMHptLTEuMDc0IDQuOTU1YTEuMiAxLjIgMCAxMS0yLjM5OCAwIDEuMiAxLjIgMCAwMTIuMzk4IDB6bTcuNDE2IDBhMS4yIDEuMiAwIDExLTIuMzk4IDAgMS4yIDEuMiAwIDAxMi4zOTggMHptLTEuMDc0LTQuOTU1YTEuMiAxLjIgMCAxMS0yLjM5OCAwIDEuMiAxLjIgMCAwMTIuMzk4IDB6bS0zLjUxMiAxLjQ5N2ExLjIgMS4yIDAgMTEtMi4zOTggMCAxLjIgMS4yIDAgMDEyLjM5OCAwem0tLjA5IDcuMTUxYTEuMiAxLjIgMCAxMS0yLjM5OCAwIDEuMiAxLjIgMCAwMTIuMzk4IDB6bTMuNjkyLTEuNzk2YTEuMiAxLjIgMCAxMS0yLjM5OCAwIDEuMiAxLjIgMCAwMTIuMzk4IDB6bS03LjI5NCAwYTEuMiAxLjIgMCAxMS0yLjM5OCAwIDEuMiAxLjIgMCAwMTIuMzk4IDB6Ii8+PC9nPjwvc3ZnPg==');
+    }
+  </style>
+</head>
+<body>
+  <!-- ... (previous HTML content remains unchanged) ... -->
+
+  <div id="animation-container"></div>
+
+  <script>
+    // ... (previous JavaScript code remains unchanged) ...
+
+    // Updated animation function
+    function createAnimatedElement(className) {
+      const element = document.createElement('div');
+      element.classList.add('token');
+      
+      // Randomly select a token class
+      const tokenClasses = ['token-usdc', 'token-btc', 'token-eth', 'token-bnb', 'token-ada'];
+      const randomTokenClass = tokenClasses[Math.floor(Math.random() * tokenClasses.length)];
+      element.classList.add(randomTokenClass);
+
+      element.style.left = `${Math.random() * 100}vw`;
+      element.style.top = `-80px`;
+      document.getElementById('animation-container').appendChild(element);
+
+      gsap.to(element, {
+        y: `${window.innerHeight + 80}px`,
+        rotation: Math.random() * 720 - 360,
+        duration: Math.random() * 10 + 5,
+        ease: 'power1.inOut',
+        onComplete: () => {
+          element.remove();
+        }
+      });
+    }
+
+    function animateElements() {
+      setInterval(() => createAnimatedElement('token'), 1000);
+    }
+
+    animateElements();
+
+    // ... (remaining JavaScript code remains unchanged) ...
+  </script>
+</body></html>

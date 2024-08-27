@@ -1,0 +1,429 @@
+<html><head><base href="/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create/Edit Content - CryptoFans</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.5.2/web3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script>
+  <style>
+    :root {
+      --primary-color: #1FC7D4;
+      --secondary-color: #7645D9;
+      --background-color: #08060B;
+      --text-color: #F4EEFF;
+      --accent-color: #ED4B9E;
+      --usdc-color: #2775CA;
+      --card-background: #27262c;
+      --card-border: #383241;
+      --input-background: #372F47;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Kanit', sans-serif;
+    }
+    body, html {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      height: 100%;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: rgba(8, 6, 11, 0.8);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    .nav-links a {
+      color: var(--text-color);
+      text-decoration: none;
+      margin-left: 20px;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover {
+      color: var(--primary-color);
+    }
+    h1 {
+      font-size: 2.5em;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+    }
+    .content-form {
+      background-color: var(--card-background);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--primary-color);
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="datetime-local"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background-color: var(--input-background);
+      color: var(--text-color);
+      font-size: 16px;
+    }
+    input[type="checkbox"] {
+      margin-right: 10px;
+    }
+    .btn {
+      background-color: var(--primary-color);
+      color: var(--background-color);
+      border: none;
+      border-radius: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .btn:hover {
+      background-color: var(--secondary-color);
+    }
+    .btn-secondary {
+      background-color: var(--accent-color);
+    }
+    .btn-secondary:hover {
+      background-color: #ff6bbc;
+    }
+    .action-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    #editorjs {
+      background-color: var(--input-background);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+    .ce-block__content,
+    .ce-toolbar__content {
+      max-width: calc(100% - 80px) !important;
+    }
+    .cdx-block {
+      max-width: 100% !important;
+    }
+    #animation-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .pancake, .bunny, .coin {
+      position: absolute;
+      pointer-events: none;
+    }
+    .pancake {
+      width: 60px;
+      height: 60px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjMUZDN0Q0Ii8+CjxwYXRoIGQ9Ik00MCA0MEg4OFY4OEg0MFY0MFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTU2IDcySDcyVjg4SDU2Vjc3WiIgZmlsbD0iI0VENEJCRSI+PC9wYXRoPgo8L3N2Zz4=');
+      background-size: contain;
+    }
+    .bunny {
+      width: 80px;
+      height: 80px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjN0M0REZGIi8+CjxwYXRoIGQ9Ik00OCA0OEg4MFY4MEg0OFY0OFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTU2IDY0SDcyVjgwSDU2VjY0WiIgZmlsbD0iI0VENEJCRSI+PC9wYXRoPgo8Y2lyY2xlIGN4PSI1NiIgY3k9IjU2IiByPSI4IiBmaWxsPSIjMDAwMDAwIi8+CjxjaXJjbGUgY3g9IjcyIiBjeT0iNTYiIHI9IjgiIGZpbGw9IiMwMDAwMDAiLz4KPC9zdmc+');
+      background-size: contain;
+    }
+    .coin {
+      width: 40px;
+      height: 40px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjRkZDQjAwIi8+CjxwYXRoIGQ9Ik00MCA0MEg4OFY4OEg0MFY0MFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTYwIDUySEg2OFY3Nkg2MFY1MloiIGZpbGw9IiNGRkE2MDAiLz4KPHBhdGggZD0iTTUyIDYwSDc2VjY4SDUyVjYwWiIgZmlsbD0iI0ZGQTYwMCIvPgo8L3N2Zz4=');
+      background-size: contain;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">CryptoFans</div>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/creators">Creators</a>
+      <a href="/profile">Profile</a>
+      <a href="/content-management">Content</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Create/Edit Content</h1>
+    
+    <form class="content-form" id="content-form">
+      <div class="form-group">
+        <label for="content-title">Title</label>
+        <input type="text" id="content-title" name="content-title" required>
+      </div>
+
+      <div class="form-group">
+        <label for="content-type">Content Type</label>
+        <select id="content-type" name="content-type" required>
+          <option value="article">Article</option>
+          <option value="video">Video</option>
+          <option value="image">Image</option>
+          <option value="poll">Poll</option>
+          <option value="live-stream">Live Stream</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="content-body">Content</label>
+        <div id="editorjs"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="content-tags">Tags (comma-separated)</label>
+        <input type="text" id="content-tags" name="content-tags">
+      </div>
+
+      <div class="form-group">
+        <label for="content-price">Price (EXDC)</label>
+        <input type="number" id="content-price" name="content-price" min="0" step="0.01">
+      </div>
+
+      <div class="form-group">
+        <label for="content-publish-date">Publish Date</label>
+        <input type="datetime-local" id="content-publish-date" name="content-publish-date">
+      </div>
+
+      <div class="form-group">
+        <label>Tier Selection</label>
+        <div class="tier-selection" id="tier-selection">
+          <!-- Tiers will be dynamically added here -->
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button type="submit" class="btn" id="save-btn">Save Content</button>
+        <button type="button" class="btn btn-secondary" id="cancel-btn">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="animation-container"></div>
+
+  <script>
+    let editor;
+
+    // Initialize Editor.js
+    document.addEventListener('DOMContentLoaded', () => {
+      editor = new EditorJS({
+        holder: 'editorjs',
+        tools: {
+          header: Header,
+          list: List,
+          image: SimpleImage,
+          embed: Embed,
+          quote: Quote
+        }
+      });
+    });
+
+    // PancakeSwap-style animations
+    function createAnimatedElement(className) {
+      const element = document.createElement('div');
+      element.classList.add(className);
+      element.style.left = `${Math.random() * 100}vw`;
+      element.style.top = `-80px`;
+      document.getElementById('animation-container').appendChild(element);
+
+      gsap.to(element, {
+        y: `${window.innerHeight + 80}px`,
+        rotation: Math.random() * 720 - 360,
+        duration: Math.random() * 10 + 5,
+        ease: 'power1.inOut',
+        onComplete: () => {
+          element.remove();
+        }
+      });
+    }
+
+    // Subscription tiers
+    const tiers = [
+      { id: 'free', name: 'Free', price: 0 },
+      { id: 'bronze', name: 'Bronze', price: 10 },
+      { id: 'silver', name: 'Silver', price: 25 },
+      { id: 'gold', name: 'Gold', price: 50 }
+    ];
+
+    function renderTiers() {
+      const container = document.getElementById('tier-selection');
+      container.innerHTML = tiers.map(tier => `
+        <label class="tier-option">
+          <input type="checkbox" name="content-tiers" value="${tier.id}">
+          ${tier.name} ($${tier.price})
+        </label>
+      `).join('');
+    }
+    
+    renderTiers()
+
+
+    function animateElements() {
+      setInterval(() => createAnimatedElement('pancake'), 2000);
+      setInterval(() => createAnimatedElement('bunny'), 3000);
+      setInterval(() => createAnimatedElement('coin'), 1500);
+    }
+
+    animateElements();
+
+    // Web3 integration
+    window.addEventListener('load', async () => {
+      if (window.ethereum) {
+        window.web3 = new Web3(ethereum);
+        try {
+          await ethereum.enable();
+          console.log("Web3 initialized!");
+        } catch (error) {
+          console.error("User denied account access");
+        }
+      } else if (window.web3) {
+        window.web3 = new Web3(web3.currentProvider);
+        console.log("Web3 initialized!");
+      } else {
+        console.log('Non-Ethereum browser detected. Consider trying MetaMask!');
+      }
+    });
+
+    // Form submission
+    document.getElementById('content-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Get form data
+      const title = document.getElementById('content-title').value;
+      const contentType = document.getElementById('content-type').value;
+      const tags = document.getElementById('content-tags').value.split(',').map(tag => tag.trim());
+      const price = document.getElementById('content-price').value;
+      const publishDate = document.getElementById('content-publish-date').value;
+      const subscribersOnly = document.getElementById('content-subscribers-only').checked;
+
+      // Get Editor.js data
+      const editorData = await editor.save();
+
+      // Prepare content object
+      const content = {
+        title,
+        contentType,
+        body: editorData,
+        tags,
+        price,
+        publishDate,
+        subscribersOnly
+      };
+
+      // Here you would typically send this data to your backend or smart contract
+      console.log('Content to be saved:', content);
+
+      // Simulating a successful save
+      alert('Content saved successfully!');
+      
+      // Clear form after successful save
+      document.getElementById('content-form').reset();
+      editor.clear();
+    });
+
+    // Cancel button
+    document.getElementById('cancel-btn').addEventListener('click', () => {
+      if (confirm('Are you sure you want to cancel? All changes will be lost.')) {
+        window.location.href = '/content-management';
+      }
+    });
+
+    // Load existing content if editing
+    function loadExistingContent(contentId) {
+      // This function would typically fetch content from your backend or smart contract
+      // For this example, we'll use mock data
+      const mockContent = {
+        id: contentId,
+        title: "Summer Fashion Trends 2023",
+        contentType: "article",
+        body: {
+          blocks: [
+            {
+              type: "header",
+              data: {
+                text: "Summer Fashion Trends 2023",
+                level: 1
+              }
+            },
+            {
+              type: "paragraph",
+              data: {
+                text: "Get ready for the hottest summer trends! From neon colors to oversized accessories, this season is all about making a statement."
+              }
+            },
+            {
+              type: "list",
+              data: {
+                style: "unordered",
+                items: [
+                  "Neon Explosion",
+                  "Oversized Everything",
+                  "Sustainable Fashion",
+                  "Retro Revival"
+                ]
+              }
+            }
+          ]
+        },
+        tags: ["fashion", "summer", "trends"],
+        price: 5.00,
+        publishDate: "2023-06-15T12:00",
+        subscribersOnly: true
+      };
+
+      // Populate form fields
+      document.getElementById('content-title').value = mockContent.title;
+      document.getElementById('content-type').value = mockContent.contentType;
+      document.getElementById('content-tags').value = mockContent.tags.join(', ');
+      document.getElementById('content-price').value = mockContent.price;
+      document.getElementById('content-publish-date').value = mockContent.publishDate;
+      document.getElementById('content-subscribers-only').checked = mockContent.subscribersOnly;
+
+      // Load content into Editor.js
+      editor.render(mockContent.body);
+    }
+
+    // Check if we're editing existing content
+    const urlParams = new URLSearchParams(window.location.search);
+    const contentId = urlParams.get('id');
+    if (contentId) {
+      loadExistingContent(contentId);
+    }
+  </script>
+</body></html>

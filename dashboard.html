@@ -1,0 +1,400 @@
+<html><head><base href="https://cryptofans.io/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoFans - Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.5.2/web3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary-color: #1FC7D4;
+      --secondary-color: #7645D9;
+      --background-color: #08060B;
+      --text-color: #F4EEFF;
+      --accent-color: #ED4B9E;
+      --usdc-color: #2775CA;
+      --card-background: #27262c;
+      --card-border: #383241;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Kanit', sans-serif;
+    }
+    body, html {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      height: 100%;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+      padding: 20px;
+      gap: 20px;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: rgba(8, 6, 11, 0.8);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    .nav-links a {
+      color: var(--text-color);
+      text-decoration: none;
+      margin-left: 20px;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover {
+      color: var(--primary-color);
+    }
+    .sidebar {
+      flex: 1;
+      background-color: var(--card-background);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    .main-content {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .stats-container {
+      flex: 1;
+      background-color: var(--card-background);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .profile-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-right: 15px;
+      object-fit: cover;
+    }
+    .profile-name {
+      font-size: 1.5em;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    .subscription-info {
+      margin-bottom: 20px;
+    }
+    .chat-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .chat-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid var(--card-border);
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .chat-item:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    .chat-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+      object-fit: cover;
+    }
+    .chat-name {
+      font-weight: 600;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .stat-card {
+      background-color: var(--card-background);
+      border-radius: 12px;
+      padding: 15px;
+    }
+    .stat-title {
+      font-size: 1.2em;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--primary-color);
+    }
+    .chart-container {
+      height: 200px;
+    }
+    #animation-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .pancake, .bunny, .coin {
+      position: absolute;
+      pointer-events: none;
+    }
+    .pancake {
+      width: 60px;
+      height: 60px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjMUZDN0Q0Ii8+CjxwYXRoIGQ9Ik00MCA0MEg4OFY4OEg0MFY0MFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTU2IDcySDcyVjg4SDU2Vjc3WiIgZmlsbD0iI0VENEJCRSI+PC9wYXRoPgo8L3N2Zz4=');
+      background-size: contain;
+    }
+    .bunny {
+      width: 80px;
+      height: 80px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjN0M0REZGIi8+CjxwYXRoIGQ9Ik00OCA0OEg4MFY4MEg0OFY0OFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTU2IDY0SDcyVjgwSDU2VjY0WiIgZmlsbD0iI0VENEJDRSI+PC9wYXRoPgo8Y2lyY2xlIGN4PSI1NiIgY3k9IjU2IiByPSI4IiBmaWxsPSIjMDAwMDAwIi8+CjxjaXJjbGUgY3g9IjcyIiBjeT0iNTYiIHI9IjgiIGZpbGw9IiMwMDAwMDAiLz4KPC9zdmc+');
+      background-size: contain;
+    }
+    .coin {
+      width: 40px;
+      height: 40px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjRkZDQjAwIi8+CjxwYXRoIGQ9Ik00MCA0MEg4OFY4OEg0MFY0MFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTYwIDUySEg2OFY3Nkg2MFY1MloiIGZpbGw9IiNGRkE2MDAiLz4KPHBhdGggZD0iTTUyIDYwSDc2VjY4SDUyVjYwWiIgZmlsbD0iI0ZGQTYwMCIvPgo8L3N2Zz4=');
+      background-size: contain;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">CryptoFans</div>
+    <div class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#marketplace">Marketplace</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="sidebar">
+      <div class="profile-info">
+        <img src="avatars/user.jpg" alt="User avatar" class="profile-avatar">
+        <div>
+          <div class="profile-name">CryptoEnthusiast</div>
+          <div>@crypto_fan_123</div>
+        </div>
+      </div>
+      <div class="subscription-info">
+        <h3>My Subscriptions</h3>
+        <p>Active: 5</p>
+        <p>Total spent: 1250 EXDC</p>
+      </div>
+      <div class="chat-list">
+        <h3>My Chats</h3>
+        <div class="chat-item">
+          <img src="avatars/creator1.jpg" alt="PixelMaster avatar" class="chat-avatar">
+          <div class="chat-name">PixelMaster</div>
+        </div>
+        <div class="chat-item">
+          <img src="avatars/creator2.jpg" alt="MusicMaven avatar" class="chat-avatar">
+          <div class="chat-name">MusicMaven</div>
+        </div>
+        <div class="chat-item">
+          <img src="avatars/creator3.jpg" alt="CryptoQueen avatar" class="chat-avatar">
+          <div class="chat-name">CryptoQueen</div>
+        </div>
+        <div class="chat-item">
+          <img src="avatars/creator4.jpg" alt="VirtualVoyager avatar" class="chat-avatar">
+          <div class="chat-name">VirtualVoyager</div>
+        </div>
+        <div class="chat-item">
+          <img src="avatars/creator5.jpg" alt="CodeCrafter avatar" class="chat-avatar">
+          <div class="chat-name">CodeCrafter</div>
+        </div>
+      </div>
+    </div>
+    <div class="main-content">
+      <div class="stats-container">
+        <h2>NFT Stats</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-title">Top NFT Collections</div>
+            <div class="chart-container">
+              <canvas id="nftCollectionsChart"></canvas>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">NFT Sales Volume</div>
+            <div class="chart-container">
+              <canvas id="nftSalesChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stats-container">
+        <h2>CryptoFans Meme Coins</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-title">Top Meme Coins</div>
+            <div class="chart-container">
+              <canvas id="memeCoinsChart"></canvas>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Meme Coin Trading Volume</div>
+            <div class="chart-container">
+              <canvas id="memeCoinsVolumeChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="animation-container"></div>
+
+  <script>
+    // PancakeSwap-style animations
+    function createAnimatedElement(className) {
+      const element = document.createElement('div');
+      element.classList.add(className);
+      element.style.left = `${Math.random() * 100}vw`;
+      element.style.top = `-80px`;
+      document.getElementById('animation-container').appendChild(element);
+
+      gsap.to(element, {
+        y: `${window.innerHeight + 80}px`,
+        rotation: Math.random() * 720 - 360,
+        duration: Math.random() * 10 + 5,
+        ease: 'power1.inOut',
+        onComplete: () => {
+          element.remove();
+        }
+      });
+    }
+
+    function animateElements() {
+      setInterval(() => createAnimatedElement('pancake'), 2000);
+      setInterval(() => createAnimatedElement('bunny'), 3000);
+      setInterval(() => createAnimatedElement('coin'), 1500);
+    }
+
+    animateElements();
+
+    // Chart.js implementations
+    function createDoughnutChart(ctx, data, labels) {
+      return new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: [
+              '#1FC7D4',
+              '#7645D9',
+              '#ED4B9E',
+              '#FFB237',
+              '#9A6AFF'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: {
+                color: '#F4EEFF'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function createLineChart(ctx, data, labels) {
+      return new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Volume',
+            data: data,
+            borderColor: '#1FC7D4',
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: '#F4EEFF'
+              }
+            },
+            y: {
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: '#F4EEFF'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Create charts
+    const nftCollectionsCtx = document.getElementById('nftCollectionsChart').getContext('2d');
+    createDoughnutChart(nftCollectionsCtx, [30, 25, 20, 15, 10], ['CryptoPunks', 'Bored Apes', 'Art Blocks', 'Doodles', 'Others']);
+
+    const nftSalesCtx = document.getElementById('nftSalesChart').getContext('2d');
+    createLineChart(nftSalesCtx, [10, 15, 7, 20, 14, 15, 18], ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']);
+
+    const memeCoinsCtx = document.getElementById('memeCoinsChart').getContext('2d');
+    createDoughnutChart(memeCoinsCtx, [40, 30, 15, 10, 5], ['DOGE', 'SHIB', 'PEPE', 'FLOKI', 'Others']);
+
+    const memeCoinsVolumeCtx = document.getElementById('memeCoinsVolumeChart').getContext('2d');
+    createLineChart(memeCoinsVolumeCtx, [5, 8, 12, 7, 15, 10, 13], ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']);
+
+    // Web3 integration
+    window.addEventListener('load', async () => {
+      if (window.ethereum) {
+        window.web3 = new Web3(ethereum);
+        try {
+          await ethereum.enable();
+          console.log("Web3 initialized!");
+        } catch (error) {
+          console.error("User denied account access");
+        }
+      } else if (window.web3) {
+        window.web3 = new Web3(web3.currentProvider);
+        console.log("Web3 initialized!");
+      } else {
+        console.log('Non-Ethereum browser detected. Consider trying MetaMask!');
+      }
+    });
+  </script>
+</body></html>

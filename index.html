@@ -1,6 +1,7 @@
-<!DOCTYPE html><html><head><base href="https://cryptofans.io/">
+<html><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoFans - Creator Timelines</title>
   <title>CryptoFans - Create and Share Content with any Token on Polygon network</title>
 	<meta name="description" content="CryptoFans - Create and Share Content with any Token on Polygon network">
 	<meta name="img" content="https://cryptofans.io/img/preview.png">
@@ -19,11 +20,8 @@
       --text-color: #F4EEFF;
       --accent-color: #ED4B9E;
       --usdc-color: #2775CA;
-      --input-background: #372F47;
-      --input-color: #F4EEFF;
-      --input-placeholder: #B8ADD2;
-      --button-background: #1FC7D4;
-      --button-color: #191326;
+      --card-background: #27262c;
+      --card-border: #383241;
     }
     * {
       margin: 0;
@@ -35,12 +33,11 @@
       background-color: var(--background-color);
       color: var(--text-color);
       height: 100%;
-      overflow: hidden;
     }
     .container {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
     }
     nav {
       display: flex;
@@ -49,20 +46,14 @@
       padding: 20px;
       background-color: rgba(8, 6, 11, 0.8);
       backdrop-filter: blur(10px);
-      position: fixed;
-      width: 100%;
+      position: sticky;
+      top: 0;
       z-index: 1000;
     }
     .logo {
       font-size: 24px;
       font-weight: 600;
       color: var(--primary-color);
-      display: flex;
-      align-items: center;
-    }
-    .logo img {
-      height: 30px;
-      margin-right: 10px;
     }
     .nav-links a {
       color: var(--text-color);
@@ -73,88 +64,77 @@
     .nav-links a:hover {
       color: var(--primary-color);
     }
-    .fullscreen-gallery {
-      flex: 1;
+    h1 {
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .creator-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 20px;
-      padding: 80px 20px 100px;
-      overflow-y: auto;
     }
     .creator-card {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: var(--card-background);
+      border: 1px solid var(--card-border);
       border-radius: 12px;
       padding: 20px;
       text-align: center;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
     }
     .creator-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
     .creator-avatar {
-      width: 150px;
-      height: 150px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
       margin: 0 auto 15px;
-      background-size: cover;
-      background-position: center;
+      object-fit: cover;
     }
     .creator-name {
+      font-size: 1.2em;
       font-weight: 600;
+      color: var(--primary-color);
       margin-bottom: 10px;
-      font-size: 20px;
-    }
-    .creator-description {
-      font-size: 14px;
-      color: var(--text-color);
-      opacity: 0.8;
-      margin-bottom: 15px;
     }
     .creator-stats {
       display: flex;
       justify-content: space-around;
-      margin-top: 15px;
+      margin-bottom: 15px;
     }
     .stat {
-      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .cta-button {
-      background-color: var(--button-background);
-      color: var(--button-color);
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
+    .stat-value {
+      font-size: 1.2em;
       font-weight: 600;
-      border-radius: 12px;
+      color: var(--accent-color);
+    }
+    .stat-label {
+      font-size: 0.8em;
+      color: var(--text-color);
+    }
+    .view-timeline-btn {
+      background-color: var(--primary-color);
+      color: var(--background-color);
+      border: none;
+      border-radius: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
-    .cta-button:hover {
+    .view-timeline-btn:hover {
       background-color: var(--secondary-color);
-      color: var(--text-color);
     }
-    .token-icons {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      display: flex;
-    }
-    .token-icon {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      margin-left: 5px;
-      background-size: contain;
-    }
-    .exdc-icon {
-      background-color: var(--primary-color);
-    }
-    .usdc-icon {
-      background-color: var(--usdc-color);
+    .subscription-info {
+      margin-top: 15px;
+      font-size: 0.9em;
+      color: var(--accent-color);
     }
     #animation-container {
       position: fixed;
@@ -186,158 +166,6 @@
       height: 40px;
       background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjRkZDQjAwIi8+CjxwYXRoIGQ9Ik00MCA0MEg4OFY4OEg0MFY0MFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTYwIDUySEg2OFY3Nkg2MFY1MloiIGZpbGw9IiNGRkE2MDAiLz4KPHBhdGggZD0iTTUyIDYwSDc2VjY4SDUyVjYwWiIgZmlsbD0iI0ZGQTYwMCIvPgo8L3N2Zz4=');
       background-size: contain;
-    }
-    .popup {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-    }
-    .popup-content {
-      background-color: var(--background-color);
-      padding: 40px;
-      border-radius: 12px;
-      max-width: 500px;
-      width: 100%;
-      text-align: center;
-    }
-    .popup h2 {
-      margin-bottom: 20px;
-      color: var(--primary-color);
-    }
-    .popup input[type="file"],
-    .popup input[type="text"],
-    .popup input[type="number"],
-    .popup input[type="date"] {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: 1px solid var(--primary-color);
-      background-color: var(--input-background);
-      color: var(--input-color);
-      border-radius: 12px;
-      font-family: 'Kanit', sans-serif;
-      font-size: 16px;
-    }
-    .popup input::placeholder {
-      color: var(--input-placeholder);
-    }
-    .close-popup {
-      position: absolute;
-      top: 10px;
-      right: 20px;
-      font-size: 24px;
-      cursor: pointer;
-      color: var(--text-color);
-    }
-    .profile-popup {
-      background-color: var(--background-color);
-      padding: 40px;
-      border-radius: 12px;
-      max-width: 800px;
-      width: 90%;
-      height: 90%;
-      overflow-y: auto;
-    }
-    .profile-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-    .profile-avatar {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      margin-right: 20px;
-      background-size: cover;
-      background-position: center;
-    }
-    .profile-info h2 {
-      margin-bottom: 10px;
-    }
-    .profile-stats {
-      display: flex;
-      justify-content: space-around;
-      margin-bottom: 30px;
-    }
-    .profile-content {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 20px;
-    }
-    .content-item {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      padding: 10px;
-      text-align: center;
-      position: relative;
-    }
-    .content-item img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      border-radius: 6px;
-      margin-bottom: 10px;
-    }
-    .lock-icon {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 24px;
-      height: 24px;
-      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRiIgZD0iTTE4IDhoLTFWNmMwLTIuNzYtMi4yNC01LTUtNVMxMCAzLjI0IDEwIDZ2Mkg5YTIgMiAwIDAwLTIgMnYxMGEyIDIgMCAwMDIgMmgxMGEyIDIgMCAwMDItMlYxMGEyIDIgMCAwMC0yLTJ6bS02IDlhMiAyIDAgMTEwLTQgMiAyIDAgMDEwIDR6bTMtOUgxMVY2YzAtMS42NiAxLjM0LTMgMy0zczMgMS4zNCAzIDN2MnoiLz48L3N2Zz4=');
-      background-size: contain;
-      cursor: pointer;
-    }
-    .subscription-form {
-      margin-top: 20px;
-    }
-    .subscription-form input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: 1px solid var(--primary-color);
-      background-color: var(--input-background);
-      color: var(--input-color);
-      border-radius: 12px;
-      font-family: 'Kanit', sans-serif;
-      font-size: 16px;
-    }
-    .subscription-form input::placeholder {
-      color: var(--input-placeholder);
-    }
-    .moderation-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 10;
-    }
-    .spinner {
-      border: 4px solid var(--text-color);
-      border-top: 4px solid var(--primary-color);
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
     }
     .footer {
       position: fixed;
@@ -383,204 +211,139 @@
   </style>
 </head>
 <body>
+  <nav>
+    <div class="logo">CryptoFans</div>
+    <div class="nav-links">
+      <a href="/home">Home</a>
+      <a href="/">Creators</a>
+      <a href="/content">Content</a>
+      <a href="/myshop">My Shop</a>
+    </div>
+  </nav>
+
   <div class="container">
-    <nav>
-      <div class="logo">
-        CryptoFans
-      </div>
-      <div class="nav-links">
-        <a href="#home">Home</a>
-        <a href="#features">Features</a>
-        <a href="#" id="get-started">Get Started</a>
-        <a href="#" id="user-profile">My Profile</a>
-      </div>
-    </nav>
-
-    <div class="fullscreen-gallery">
-  <!-- Creator cards will be dynamically inserted here -->
-  <div class="creator-card">
-    <div class="creator-avatar" style="background-image: url('avatars/creator1.jpg');"></div>
-    <h3 class="creator-name">PixelMaster</h3>
-    <p class="creator-description">Digital artist specializing in pixel art and retro-style illustrations</p>
-    <div class="creator-stats">
-      <span class="stat">15,000 followers</span>
-      <span class="stat">50 items</span>
+    <h1>Creators</h1>
+    <div class="creator-grid">
+      <!-- Creator cards will be dynamically inserted here -->
     </div>
-    <button class="cta-button view-shop">View Shop</button>
-    <div class="token-icons">
-      <div class="token-icon exdc-icon" title="EXDC Token"></div>
-      <div class="token-icon usdc-icon" title="USDC"></div>
-    </div>
-    <img src="pixel-art-example.jpg" alt="Pixel art example by PixelMaster" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-top: 10px;">
-  </div>
-  
-  <div class="creator-card">
-    <div class="creator-avatar" style="background-image: url('avatars/creator2.jpg');"></div>
-    <h3 class="creator-name">MusicMaven</h3>
-    <p class="creator-description">Electronic music producer creating unique soundscapes</p>
-    <div class="creator-stats">
-      <span class="stat">22,000 followers</span>
-      <span class="stat">30 items</span>
-    </div>
-    <button class="cta-button view-shop">View Shop</button>
-    <div class="token-icons">
-      <div class="token-icon exdc-icon" title="EXDC Token"></div>
-      <div class="token-icon usdc-icon" title="USDC"></div>
-    </div>
-    <img src="electronic-music-visualizer.jpg" alt="Electronic music visualizer by MusicMaven" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-top: 10px;">
-  </div>
-  
-  <!-- Add more creator cards with images as needed -->
-</div>
-
-    <footer class="footer">
-      <div class="categories">
-        <a href="#art" class="category">Art</a>
-        <a href="#music" class="category">Music</a>
-        <a href="#photography" class="category">Photography</a>
-        <a href="#videos" class="category">Videos</a>
-        <a href="#writing" class="category">Writing</a>
-      </div>
-      <a href="https://exdc.cc" class="exdc-link">
-        <span id="account-info">EXDC</span>
-      </a>
-    </footer>
   </div>
 
   <div id="animation-container"></div>
 
-  <div id="create-profile-popup" class="popup">
-    <div class="popup-content">
-      <span class="close-popup">×</span>
-      <h2>Create Your Profile</h2>
-      <input type="text" id="profile-name" placeholder="Your Name">
-      <input type="file" id="profile-picture" accept="image/*">
-      <button class="cta-button" id="create-profile">Create Profile</button>
+  <footer class="footer">
+    <div class="categories">
+      <a href="#art" class="category">Art</a>
+      <a href="#music" class="category">Music</a>
+      <a href="#photography" class="category">Photography</a>
+      <a href="#videos" class="category">Videos</a>
+      <a href="#writing" class="category">Writing</a>
     </div>
-  </div>
-
-  <div id="submit-popup" class="popup">
-    <div class="popup-content">
-      <span class="close-popup">×</span>
-      <h2>Submit Your Content</h2>
-      <input type="file" id="file-input" accept="image/*, video/*, audio/*">
-      <input type="text" id="content-name" placeholder="Content Name" readonly="">
-      <input type="number" id="content-price" placeholder="Price (EXDC)" readonly="">
-      <input type="date" id="publish-date" readonly="">
-      <label>
-        <input type="checkbox" id="lock-content"> Lock this content
-      </label>
-      <button class="cta-button" id="confirm-submit">Confirm &amp; Submit</button>
-    </div>
-  </div>
-
-  <div id="profile-popup" class="popup">
-    <div class="profile-popup">
-      <span class="close-popup">×</span>
-      <div class="profile-header">
-        <div class="profile-avatar"></div>
-        <div class="profile-info">
-          <h2>Your Profile</h2>
-          <p>Welcome to your CryptoFans profile!</p>
-        </div>
-      </div>
-      <div class="profile-stats">
-        <div class="stat">Followers: <span id="follower-count">0</span></div>
-        <div class="stat">Items: <span id="item-count">0</span></div>
-      </div>
-      <div class="profile-content">
-        <!-- Content items will be dynamically inserted here -->
-      </div>
-      <div class="subscription-form" style="display: none;">
-        <h3>Set Subscription</h3>
-        <input type="number" id="subscription-time" placeholder="Subscription time (days)">
-        <input type="number" id="subscription-price" placeholder="Subscription price (EXDC)">
-        <button class="cta-button" id="set-subscription">Set Subscription</button>
-      </div>
-    </div>
-  </div>
+    <a href="https://exdc.cc" class="exdc-link">
+      <span id="account-info">EXDC</span>
+    </a>
+  </footer>
   <script>
     const creators = [
       {
         name: "PixelMaster",
-        avatar: "avatars/creator1.jpg",
-        description: "Digital artist specializing in pixel art and retro-style illustrations",
+        avatar: "/img/pixelmaster.webp",
         followers: 15000,
-        items: 50
+        posts: 342,
+        subscriptionPrice: 10,
+        hiddenContent: true
       },
       {
         name: "MusicMaven",
-        avatar: "avatars/creator2.jpg",
-        description: "Electronic music producer creating unique soundscapes",
+        avatar: "/img/musicmaven.webp",
         followers: 22000,
-        items: 30
+        posts: 178,
+        subscriptionPrice: 15,
+        hiddenContent: true
       },
       {
         name: "CryptoQueen",
-        avatar: "avatars/creator3.jpg",
-        description: "Blockchain educator and crypto art collector",
-        followers: 18000,
-        items: 40
+        avatar: "/img/cryptoqueen.webp",
+        followers: 50000,
+        posts: 512,
+        subscriptionPrice: 25,
+        hiddenContent: true
       },
       {
         name: "VirtualVoyager",
-        avatar: "avatars/creator4.jpg",
-        description: "VR experience designer and 3D modeler",
-        followers: 12000,
-        items: 25
+        avatar: "/img/virtualvoyager.webp",
+        followers: 18000,
+        posts: 230,
+        subscriptionPrice: 12,
+        hiddenContent: false
       },
       {
         name: "CodeCrafter",
-        avatar: "avatars/creator5.jpg",
-        description: "Software developer sharing coding tutorials and resources",
-        followers: 20000,
-        items: 60
+        avatar: "/img/codecrafter.webp",
+        followers: 12000,
+        posts: 156,
+        subscriptionPrice: 8,
+        hiddenContent: true
       },
       {
-        name: "FashionForward",
-        avatar: "avatars/creator6.jpg",
-        description: "Digital fashion designer creating wearable NFTs",
-        followers: 25000,
-        items: 35
+        name: "ArtisticSoul",
+        avatar: "/img/artistic.webp",
+        followers: 30000,
+        posts: 420,
+        subscriptionPrice: 20,
+        hiddenContent: true
+      },
+      {
+        name: "TechGuru",
+        avatar: "/img/techguru.webp",
+        followers: 40000,
+        posts: 280,
+        subscriptionPrice: 18,
+        hiddenContent: false
+      },
+      {
+        name: "FashionIcon",
+        avatar: "/img/fashion.webp",
+        followers: 60000,
+        posts: 890,
+        subscriptionPrice: 30,
+        hiddenContent: true
       }
     ];
 
-    const gallery = document.querySelector('.fullscreen-gallery');
-    const createProfilePopup = document.getElementById('create-profile-popup');
-    const submitPopup = document.getElementById('submit-popup');
-    const profilePopup = document.getElementById('profile-popup');
-    const getStartedBtn = document.getElementById('get-started');
-    const userProfileBtn = document.getElementById('user-profile');
-    const closePopupBtns = document.querySelectorAll('.close-popup');
-    const fileInput = document.getElementById('file-input');
-    const contentName = document.getElementById('content-name');
-    const contentPrice = document.getElementById('content-price');
-    const publishDate = document.getElementById('publish-date');
-    const lockContent = document.getElementById('lock-content');
-    const confirmSubmitBtn = document.getElementById('confirm-submit');
-    const setSubscriptionBtn = document.getElementById('set-subscription');
-    const createProfileBtn = document.getElementById('create-profile');
+    const creatorGrid = document.querySelector('.creator-grid');
 
-    let userProfile = null;
-
-    creators.forEach(creator => {
+    function createCreatorCard(creator) {
       const card = document.createElement('div');
       card.classList.add('creator-card');
+
       card.innerHTML = `
-        <div class="creator-avatar" style="background-image: url('${creator.avatar}');"></div>
-        <h3 class="creator-name">${creator.name}</h3>
-        <p class="creator-description">${creator.description}</p>
+        <img class="creator-avatar" src="${creator.avatar}" alt="${creator.name}'s avatar">
+        <h2 class="creator-name">${creator.name}</h2>
         <div class="creator-stats">
-          <span class="stat">${creator.followers.toLocaleString()} followers</span>
-          <span class="stat">${creator.items} items</span>
+          <div class="stat">
+            <span class="stat-value">${creator.followers.toLocaleString()}</span>
+            <span class="stat-label">Followers</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">${creator.posts}</span>
+            <span class="stat-label">Posts</span>
+          </div>
         </div>
-        <button class="cta-button view-shop">View Shop</button>
-        <div class="token-icons">
-          <div class="token-icon exdc-icon" title="EXDC Token"></div>
-          <div class="token-icon usdc-icon" title="USDC"></div>
-        </div>
+        <a href="/creator/" class="view-timeline-btn">View Profile</a>
+        ${creator.hiddenContent ? `
+          <div class="subscription-info">
+            <p>Subscription: ${creator.subscriptionPrice} EXDC/month</p>
+            <p>Contains hidden content</p>
+          </div>
+        ` : ''}
       `;
-      gallery.appendChild(card);
+
+      return card;
+    }
+
+    creators.forEach(creator => {
+      const creatorCard = createCreatorCard(creator);
+      creatorGrid.appendChild(creatorCard);
     });
 
     // PancakeSwap-style animations
@@ -610,135 +373,22 @@
 
     animateElements();
 
-    function showPopup(popup) {
-      popup.style.opacity = '1';
-      popup.style.visibility = 'visible';
-    }
-
-    function hidePopup(popup) {
-      popup.style.opacity = '0';
-      popup.style.visibility = 'hidden';
-    }
-
-    getStartedBtn.addEventListener('click', () => {
-      if (userProfile) {
-        showPopup(submitPopup);
-      } else {
-        showPopup(createProfilePopup);
-      }
-    });
-
-    userProfileBtn.addEventListener('click', () => {
-      if (userProfile) {
-        showPopup(profilePopup);
-        document.querySelector('.subscription-form').style.display = 'block';
-      } else {
-        showPopup(createProfilePopup);
-      }
-    });
-
-    closePopupBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        hidePopup(createProfilePopup);
-        hidePopup(submitPopup);
-        hidePopup(profilePopup);
-      });
-    });
-
-    createProfileBtn.addEventListener('click', () => {
-      const name = document.getElementById('profile-name').value;
-      const picture = document.getElementById('profile-picture').files[0];
-
-      if (name && picture) {
-        userProfile = { name, picture };
-        hidePopup(createProfilePopup);
-        showPopup(submitPopup);
-        updateProfileInfo();
-      } else {
-        alert('Please enter your name and select a profile picture.');
-      }
-    });
-
-    fileInput.addEventListener('change', (e) => {
-      if (e.target.files.length > 0) {
-        const file = e.target.files[0];
-        contentName.value = file.name.split('.')[0];
-        contentPrice.value = Math.floor(Math.random() * 100) + 1;
-        const date = new Date();
-        date.setDate(date.getDate() + Math.floor(Math.random() * 7) + 1);
-        publishDate.value = date.toISOString().split('T')[0];
-      }
-    });
-
-    confirmSubmitBtn.addEventListener('click', () => {
-      hidePopup(submitPopup);
-      
-      setTimeout(() => {
-        showPopup(profilePopup);
-        addContentToProfile();
-      }, 500);
-    });
-
-    setSubscriptionBtn.addEventListener('click', () => {
-      const subscriptionTime = document.getElementById('subscription-time').value;
-      const subscriptionPrice = document.getElementById('subscription-price').value;
-      
-      if (subscriptionTime && subscriptionPrice) {
-        alert(`Subscription set for ${subscriptionTime} days at ${subscriptionPrice} EXDC`);
-      } else {
-        alert('Please enter both subscription time and price.');
-      }
-    });
-
-    document.querySelectorAll('.view-shop').forEach(btn => {
-      btn.addEventListener('click', () => {
-        showPopup(profilePopup);
-        document.querySelector('.subscription-form').style.display = 'none';
-      });
-    });
-
-    function updateProfileInfo() {
-      if (userProfile) {
-        document.querySelector('.profile-avatar').style.backgroundImage = `url(${URL.createObjectURL(userProfile.picture)})`;
-        document.querySelector('.profile-info h2').textContent = userProfile.name;
-      }
-    }
-
-    function addContentToProfile() {
-      const profileContent = document.querySelector('.profile-content');
-      const newItem = document.createElement('div');
-      newItem.classList.add('content-item');
-      newItem.innerHTML = `
-        <div class="moderation-overlay">
-          <div class="spinner"></div>
-        </div>
-        <img src="placeholder.jpg" alt="${contentName.value}">
-        <h3>${contentName.value}</h3>
-        <p>${contentPrice.value} EXDC</p>
-        <p>Publish: ${publishDate.value}</p>
-        ${lockContent.checked ? '<div class="lock-icon"></div>' : ''}
-      `;
-      profileContent.appendChild(newItem);
-
-      // Simulate moderation process
-      setTimeout(() => {
-        newItem.querySelector('.moderation-overlay').remove();
-      }, Math.random() * 3000 + 2000);
-
-      // Update stats
-      const followerCount = document.getElementById('follower-count');
-      const itemCount = document.getElementById('item-count');
-      followerCount.textContent = parseInt(followerCount.textContent) + Math.floor(Math.random() * 10) + 1;
-      itemCount.textContent = parseInt(itemCount.textContent) + 1;
-    }
-
     // Web3 integration
     window.addEventListener('load', async () => {
-      const exdc = new EXDC_SDK()
-      console.info("exdc", exdc)
-      exdc.checkMetaMask().then((info)=>{
-        document.getElementById("account-info").innerHTML = info.textContent
-      })
+      if (window.ethereum) {
+        window.web3 = new Web3(ethereum);
+        try {
+          await ethereum.enable();
+          console.log("Web3 initialized!");
+        } catch (error) {
+          console.error("User denied account access");
+        }
+      } else if (window.web3) {
+        window.web3 = new Web3(web3.currentProvider);
+        console.log("Web3 initialized!");
+      } else {
+        console.log('Non-Ethereum browser detected. Consider trying MetaMask!');
+      }
     });
   </script>
 </body></html>

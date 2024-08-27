@@ -1,0 +1,369 @@
+<html><head><base href="https://cryptofans.io/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoFans - Timeline of Latest Posts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.5.2/web3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #1FC7D4;
+      --secondary-color: #7645D9;
+      --background-color: #08060B;
+      --text-color: #F4EEFF;
+      --accent-color: #ED4B9E;
+      --usdc-color: #2775CA;
+      --card-background: #27262c;
+      --card-border: #383241;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Kanit', sans-serif;
+    }
+    body, html {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      height: 100%;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: rgba(8, 6, 11, 0.8);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    .nav-links a {
+      color: var(--text-color);
+      text-decoration: none;
+      margin-left: 20px;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover {
+      color: var(--primary-color);
+    }
+    h1 {
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .timeline {
+      position: relative;
+      padding: 20px 0;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 2px;
+      height: 100%;
+      background: var(--secondary-color);
+      transform: translateX(-50%);
+    }
+    .post {
+      background-color: var(--card-background);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      position: relative;
+      width: calc(50% - 30px);
+      animation: fadeIn 0.5s ease-out;
+    }
+    .post:nth-child(odd) {
+      left: 0;
+    }
+    .post:nth-child(even) {
+      left: 50%;
+    }
+    .post::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      width: 20px;
+      height: 20px;
+      background: var(--primary-color);
+      border-radius: 50%;
+    }
+    .post:nth-child(odd)::before {
+      right: -40px;
+    }
+    .post:nth-child(even)::before {
+      left: -40px;
+    }
+    .post-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .creator-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 15px;
+      object-fit: cover;
+    }
+    .creator-name {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    .post-timestamp {
+      font-size: 0.8em;
+      color: #888;
+      margin-left: auto;
+    }
+    .post-content {
+      margin-bottom: 15px;
+    }
+    .post-image {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .post-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .action-btn {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-size: 0.9em;
+    }
+    .action-btn svg {
+      margin-right: 5px;
+    }
+    .action-btn:hover {
+      color: var(--primary-color);
+    }
+    .token-price {
+      font-weight: 600;
+      color: var(--accent-color);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    #animation-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .pancake, .bunny, .coin {
+      position: absolute;
+      pointer-events: none;
+    }
+    .pancake {
+      width: 60px;
+      height: 60px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjMUZDN0Q0Ii8+CjxwYXRoIGQ9Ik00MCA0MEg4OFY4OEg0MFY0MFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTU2IDcySDcyVjg4SDU2Vjc3WiIgZmlsbD0iI0VENEJCRSI+PC9wYXRoPgo8L3N2Zz4=');
+      background-size: contain;
+    }
+    .bunny {
+      width: 80px;
+      height: 80px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjN0M0REZGIi8+CjxwYXRoIGQ9Ik00OCA0OEg4MFY4MEg0OFY0OFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTU2IDY0SDcyVjgwSDU2VjY0WiIgZmlsbD0iI0VENEJDRSI+PC9wYXRoPgo8Y2lyY2xlIGN4PSI1NiIgY3k9IjU2IiByPSI4IiBmaWxsPSIjMDAwMDAwIi8+CjxjaXJjbGUgY3g9IjcyIiBjeT0iNTYiIHI9IjgiIGZpbGw9IiMwMDAwMDAiLz4KPC9zdmc+');
+      background-size: contain;
+    }
+    .coin {
+      width: 40px;
+      height: 40px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjRkZDQjAwIi8+CjxwYXRoIGQ9Ik00MCA0MEg4OFY4OEg0MFY0MFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTYwIDUySEg2OFY3Nkg2MFY1MloiIGZpbGw9IiNGRkE2MDAiLz4KPHBhdGggZD0iTTUyIDYwSDc2VjY4SDUyVjYwWiIgZmlsbD0iI0ZGQTYwMCIvPgo8L3N2Zz4=');
+      background-size: contain;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">CryptoFans</div>
+    <div class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#profile">Profile</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Latest Posts from Creators You Follow</h1>
+    <div class="timeline">
+      <!-- Posts will be dynamically inserted here -->
+    </div>
+  </div>
+
+  <div id="animation-container"></div>
+
+  <script>
+    const posts = [
+      {
+        creator: {
+          name: "PixelMaster",
+          avatar: "avatars/creator1.jpg"
+        },
+        timestamp: "2023-05-15T14:30:00",
+        content: "Just finished my latest pixel art piece! What do you think?",
+        image: "posts/pixel_art_1.jpg",
+        likes: 256,
+        comments: 42,
+        price: 50
+      },
+      {
+        creator: {
+          name: "MusicMaven",
+          avatar: "avatars/creator2.jpg"
+        },
+        timestamp: "2023-05-15T12:15:00",
+        content: "New track dropping tomorrow! Get ready for some sick beats 🎵",
+        likes: 189,
+        comments: 31,
+        price: 25
+      },
+      {
+        creator: {
+          name: "CryptoQueen",
+          avatar: "avatars/creator3.jpg"
+        },
+        timestamp: "2023-05-15T10:00:00",
+        content: "Just acquired this amazing NFT for my collection. The detail is mind-blowing!",
+        image: "posts/nft_1.jpg",
+        likes: 412,
+        comments: 73,
+        price: 100
+      },
+      {
+        creator: {
+          name: "VirtualVoyager",
+          avatar: "avatars/creator4.jpg"
+        },
+        timestamp: "2023-05-14T22:45:00",
+        content: "Sneak peek of my latest VR experience. Prepare to be transported to another world!",
+        image: "posts/vr_experience_1.jpg",
+        likes: 301,
+        comments: 58,
+        price: 75
+      },
+      {
+        creator: {
+          name: "CodeCrafter",
+          avatar: "avatars/creator5.jpg"
+        },
+        timestamp: "2023-05-14T20:30:00",
+        content: "Just pushed a major update to my smart contract library. Check it out on GitHub!",
+        likes: 178,
+        comments: 29,
+        price: 40
+      }
+    ];
+
+    const timeline = document.querySelector('.timeline');
+
+    function createPostElement(post) {
+      const postElement = document.createElement('div');
+      postElement.classList.add('post');
+
+      const formattedDate = new Date(post.timestamp).toLocaleString();
+
+      postElement.innerHTML = `
+        <div class="post-header">
+          <img class="creator-avatar" src="${post.creator.avatar}" alt="${post.creator.name}'s avatar">
+          <span class="creator-name">${post.creator.name}</span>
+          <span class="post-timestamp">${formattedDate}</span>
+        </div>
+        <div class="post-content">
+          <p>${post.content}</p>
+          ${post.image ? `<img class="post-image" src="${post.image}" alt="Post image">` : ''}
+        </div>
+        <div class="post-actions">
+          <button class="action-btn like-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+            </svg>
+            ${post.likes}
+          </button>
+          <button class="action-btn comment-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+            </svg>
+            ${post.comments}
+          </button>
+          <span class="token-price">${post.price} EXDC</span>
+        </div>
+      `;
+
+      return postElement;
+    }
+
+    posts.forEach(post => {
+      const postElement = createPostElement(post);
+      timeline.appendChild(postElement);
+    });
+
+    // PancakeSwap-style animations
+    function createAnimatedElement(className) {
+      const element = document.createElement('div');
+      element.classList.add(className);
+      element.style.left = `${Math.random() * 100}vw`;
+      element.style.top = `-80px`;
+      document.getElementById('animation-container').appendChild(element);
+
+      gsap.to(element, {
+        y: `${window.innerHeight + 80}px`,
+        rotation: Math.random() * 720 - 360,
+        duration: Math.random() * 10 + 5,
+        ease: 'power1.inOut',
+        onComplete: () => {
+          element.remove();
+        }
+      });
+    }
+
+    function animateElements() {
+      setInterval(() => createAnimatedElement('pancake'), 2000);
+      setInterval(() => createAnimatedElement('bunny'), 3000);
+      setInterval(() => createAnimatedElement('coin'), 1500);
+    }
+
+    animateElements();
+
+    // Web3 integration
+    window.addEventListener('load', async () => {
+      if (window.ethereum) {
+        window.web3 = new Web3(ethereum);
+        try {
+          await ethereum.enable();
+          console.log("Web3 initialized!");
+        } catch (error) {
+          console.error("User denied account access");
+        }
+      } else if (window.web3) {
+        window.web3 = new Web3(web3.currentProvider);
+        console.log("Web3 initialized!");
+      } else {
+        console.log('Non-Ethereum browser detected. Consider trying MetaMask!');
+      }
+    });
+  </script>
+</body></html>

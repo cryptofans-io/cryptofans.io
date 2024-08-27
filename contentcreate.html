@@ -1,0 +1,340 @@
+<html><head><base href="/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create New Content - CryptoFans</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.5.2/web3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #1FC7D4;
+      --secondary-color: #7645D9;
+      --background-color: #08060B;
+      --text-color: #F4EEFF;
+      --accent-color: #ED4B9E;
+      --usdc-color: #2775CA;
+      --card-background: #27262c;
+      --card-border: #383241;
+      --input-background: #372F47;
+      --input-border: #524B63;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Kanit', sans-serif;
+    }
+    body, html {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      height: 100%;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    h1 {
+      font-size: 2.5em;
+      color: var(--primary-color);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    form {
+      background-color: var(--card-background);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 30px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--text-color);
+      font-weight: 600;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="datetime-local"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background-color: var(--input-background);
+      color: var(--text-color);
+      font-size: 16px;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    .file-input-label {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .file-input-label:hover {
+      background-color: #8D5BE9;
+    }
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+    }
+    .checkbox-group input[type="checkbox"] {
+      margin-right: 10px;
+    }
+    .submit-btn {
+      background-color: var(--primary-color);
+      color: var(--background-color);
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+    }
+    .submit-btn:hover {
+      background-color: #25E1F0;
+    }
+    .pricing-inputs {
+      display: flex;
+      gap: 20px;
+    }
+    .pricing-inputs > div {
+      flex: 1;
+    }
+    #animation-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .pancake, .bunny, .coin {
+      position: absolute;
+      pointer-events: none;
+    }
+    .pancake {
+      width: 60px;
+      height: 60px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjMUZDN0Q0Ii8+CjxwYXRoIGQ9Ik00MCA0MEg4OFY4OEg0MFY0MFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTU2IDcySDcyVjg4SDU2Vjc3WiIgZmlsbD0iI0VENEJCRSI+PC9wYXRoPgo8L3N2Zz4=');
+      background-size: contain;
+    }
+    .bunny {
+      width: 80px;
+      height: 80px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjN0M0REZGIi8+CjxwYXRoIGQ9Ik00OCA0OEg4MFY4MEg0OFY0OFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTU2IDY0SDcyVjgwSDU2VjY0WiIgZmlsbD0iI0VENEJDRSI+PC9wYXRoPgo8Y2lyY2xlIGN4PSI1NiIgY3k9IjU2IiByPSI4IiBmaWxsPSIjMDAwMDAwIi8+CjxjaXJjbGUgY3g9IjcyIiBjeT0iNTYiIHI9IjgiIGZpbGw9IiMwMDAwMDAiLz4KPC9zdmc+');
+      background-size: contain;
+    }
+    .coin {
+      width: 40px;
+      height: 40px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjRkZDQjAwIi8+CjxwYXRoIGQ9Ik00MCA0MEg4OFY4OEg0MFY0MFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTYwIDUySEg2OFY3Nkg2MFY1MloiIGZpbGw9IiNGRkE2MDAiLz4KPHBhdGggZD0iTTUyIDYwSDc2VjY4SDUyVjYwWiIgZmlsbD0iI0ZGQTYwMCIvPgo8L3N2Zz4=');
+      background-size: contain;
+    }
+
+    .tier-selection {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .tier-option {
+      background-color: var(--input-background);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .tier-option:hover, .tier-option.selected {
+      background-color: var(--secondary-color);
+    }
+    .tier-option input[type="checkbox"] {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Create New Content</h1>
+    <form id="new-content-form">
+      <div class="form-group">
+        <label for="content-type">Content Type</label>
+        <select id="content-type" name="content-type" required>
+          <option value="">Select content type</option>
+          <option value="article">Article</option>
+          <option value="video">Video</option>
+          <option value="image">Image</option>
+          <option value="audio">Audio</option>
+          <option value="livestream">Livestream</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" required>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="file-upload" class="file-input-label">Upload File</label>
+        <input type="file" id="file-upload" name="file-upload">
+      </div>
+
+      <div class="form-group">
+        <label>Tier Selection</label>
+        <div class="tier-selection" id="tier-selection">
+          <!-- Tiers will be dynamically added here -->
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="content-publish-date">Publish Date</label>
+        <input type="datetime-local" id="content-publish-date" name="content-publish-date">
+      </div>
+
+      <div class="form-group">
+        <label>Pricing</label>
+        <div class="pricing-inputs">
+          <div>
+            <label for="price-exdc">Price (EXDC)</label>
+            <input type="number" id="price-exdc" name="price-exdc" min="0" step="0.01">
+          </div>
+          <div>
+            <label for="price-usdc">Price (USDC)</label>
+            <input type="number" id="price-usdc" name="price-usdc" min="0" step="0.01">
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">Create Content</button>
+    </form>
+  </div>
+
+  <div id="animation-container"></div>
+
+  <script>
+    // PancakeSwap-style animations
+    function createAnimatedElement(className) {
+      const element = document.createElement('div');
+      element.classList.add(className);
+      element.style.left = `${Math.random() * 100}vw`;
+      element.style.top = `-80px`;
+      document.getElementById('animation-container').appendChild(element);
+
+      gsap.to(element, {
+        y: `${window.innerHeight + 80}px`,
+        rotation: Math.random() * 720 - 360,
+        duration: Math.random() * 10 + 5,
+        ease: 'power1.inOut',
+        onComplete: () => {
+          element.remove();
+        }
+      });
+    }
+
+    function animateElements() {
+      setInterval(() => createAnimatedElement('pancake'), 2000);
+      setInterval(() => createAnimatedElement('bunny'), 3000);
+      setInterval(() => createAnimatedElement('coin'), 1500);
+    }
+
+    // Subscription tiers
+    const tiers = [
+      { id: 'free', name: 'Free', price: 0 },
+      { id: 'bronze', name: 'Bronze', price: 10 },
+      { id: 'silver', name: 'Silver', price: 25 },
+      { id: 'gold', name: 'Gold', price: 50 }
+    ];
+
+    function renderTiers() {
+      const container = document.getElementById('tier-selection');
+      container.innerHTML = tiers.map(tier => `
+        <label class="tier-option">
+          <input type="checkbox" name="content-tiers" value="${tier.id}">
+          ${tier.name} ($${tier.price})
+        </label>
+      `).join('');
+    }
+    renderTiers();
+
+    animateElements();
+
+    // Web3 integration
+    window.addEventListener('load', async () => {
+      if (window.ethereum) {
+        window.web3 = new Web3(ethereum);
+        try {
+          await ethereum.enable();
+          console.log("Web3 initialized!");
+        } catch (error) {
+          console.error("User denied account access");
+        }
+      } else if (window.web3) {
+        window.web3 = new Web3(web3.currentProvider);
+        console.log("Web3 initialized!");
+      } else {
+        console.log('Non-Ethereum browser detected. Consider trying MetaMask!');
+      }
+    });
+
+    // Form submission
+    document.getElementById('new-content-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const contentData = Object.fromEntries(formData.entries());
+
+      // Here you would typically send this data to your backend or smart contract
+      console.log('Content data:', contentData);
+
+      // Simulate content creation
+      setTimeout(() => {
+        alert('Content created successfully!');
+        // Here you would typically redirect to the content management page or show a success message
+      }, 1000);
+    });
+
+    // Auto-generate title and price
+    document.getElementById('file-upload').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        // Auto-generate title based on file name
+        const title = file.name.split('.').slice(0, -1).join('.');
+        document.getElementById('title').value = title;
+
+        // Auto-generate price (this is just an example, you might want to use a more sophisticated pricing strategy)
+        const sizeInMB = file.size / (1024 * 1024);
+        const suggestedPrice = Math.max(1, Math.round(sizeInMB * 0.5)); // Minimum 1 EXDC, 0.5 EXDC per MB
+        document.getElementById('price-exdc').value = suggestedPrice;
+        document.getElementById('price-usdc').value = (suggestedPrice * 1.5).toFixed(2); // Assuming 1 EXDC = 1.5 USDC
+      }
+    });
+
+    // Set default publish date to now
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    // document.getElementById('publish-date').value = now.toISOString().slice(0, 16);
+  </script>
+</body></html>
