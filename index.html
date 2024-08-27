@@ -375,20 +375,11 @@
 
     // Web3 integration
     window.addEventListener('load', async () => {
-      if (window.ethereum) {
-        window.web3 = new Web3(ethereum);
-        try {
-          await ethereum.enable();
-          console.log("Web3 initialized!");
-        } catch (error) {
-          console.error("User denied account access");
-        }
-      } else if (window.web3) {
-        window.web3 = new Web3(web3.currentProvider);
-        console.log("Web3 initialized!");
-      } else {
-        console.log('Non-Ethereum browser detected. Consider trying MetaMask!');
-      }
+      const exdc = new EXDC_SDK()
+      console.info("exdc", exdc)
+      exdc.checkMetaMask().then((info)=>{
+        document.getElementById("account-info").innerHTML = info.textContent
+      })
     });
   </script>
 </body></html>
