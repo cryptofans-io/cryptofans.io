@@ -1,0 +1,120 @@
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: rgba(8, 6, 11, 0.8);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.logo {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+.nav-links a {
+  color: var(--text-color);
+  text-decoration: none;
+  margin-left: 20px;
+  transition: color 0.3s ease;
+}
+.nav-links a:hover {
+  color: var(--primary-color);
+}
+h1 {
+  font-size: 2.5em;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+}
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+.content-card {
+  background-color: var(--card-background);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.content-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+.content-type {
+  font-size: 0.8em;
+  color: var(--accent-color);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.content-title {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+.content-preview {
+  font-size: 0.9em;
+  margin-bottom: 15px;
+}
+.content-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9em;
+}
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+.status-published {
+  background-color: #00C853;
+}
+.status-draft {
+  background-color: #FFC107;
+}
+.status-scheduled {
+  background-color: #2196F3;
+}
+.content-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+.action-btn {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  border: none;
+  border-radius: 20px;
+  padding: 5px 15px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.action-btn:hover {
+  background-color: var(--secondary-color);
+}
+.new-content-btn {
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 20px;
+}
+.new-content-btn:hover {
+  background-color: #ff6bbc;
+}

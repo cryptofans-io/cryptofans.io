@@ -1,0 +1,148 @@
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+h1, h2 {
+  color: var(--primary-color);
+  margin-bottom: 20px;
+}
+.card {
+  background-color: var(--card-background);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.balance-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.balance-amount {
+  font-size: 2em;
+  font-weight: 600;
+  color: var(--accent-color);
+}
+.token-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+.button {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.button:hover {
+  background-color: var(--secondary-color);
+}
+.payout-history {
+  width: 100%;
+  border-collapse: collapse;
+}
+.payout-history th, .payout-history td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--card-border);
+}
+.payout-history th {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+.chart-container {
+  position: relative;
+  height: 300px;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.popup {
+  background-color: var(--card-background);
+  border-radius: 24px;
+  padding: 32px;
+  width: 90%;
+  max-width: 480px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+.close-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--text-color);
+  cursor: pointer;
+}
+h2 {
+  color: var(--primary-color);
+  margin-bottom: 24px;
+  text-align: center;
+}
+.input-group {
+  margin-bottom: 24px;
+}
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-color);
+}
+input[type="number"],
+input[type="text"],
+select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-size: 16px;
+}
+.token-selector {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.token-option {
+  flex: 1;
+  text-align: center;
+  padding: 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.token-option.selected {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+}
+.token-option:first-child {
+  margin-right: 12px;
+}
+.balance {
+  text-align: right;
+  font-size: 14px;
+  margin-top: 8px;
+}
+.hidden {
+  display: none;
+}
