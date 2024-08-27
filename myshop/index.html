@@ -35,6 +35,11 @@
         <label for="shop-name">Shop Name</label>
         <input type="text" id="shop-name" name="shop-name" required>
       </div>
+      
+      <div class="form-group">
+        <label for="file-upload" class="file-input-label">Shop Avatar</label>
+        <input type="file" id="file-upload" name="file-upload" required accept="image/png, image/jpeg">
+      </div>
 
       <div class="form-group">
         <label for="shop-description">Shop Description</label>
@@ -42,9 +47,8 @@
       </div>
 
       <div class="form-group">
-        <label for="default-currency">Default Currency</label>
+        <label for="default-currency">Currency</label>
         <select id="default-currency" name="default-currency" required>
-          <option value="EXDC">EXDC</option>
           <option value="USDC">USDC</option>
         </select>
       </div>
@@ -53,7 +57,7 @@
         <div class="tiers-list">
           <h2>Subscription Tiers</h2>
           <div id="tiers-list-container"></div>
-          <button type="button" class="btn add-tier-btn" id="add-tier-btn">Add Tier</button>
+          <button type="button" class="btn add-tier-btn hidden" id="add-tier-btn">Add Tier</button>
         </div>
         <div class="tier-details">
           <h2>Tier Details</h2>
@@ -61,7 +65,7 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group hidden">
         <label for="commission-rate">Commission Rate (%)</label>
         <input type="number" id="commission-rate" name="commission-rate" min="0" max="100" step="0.1" required>
       </div>
@@ -177,7 +181,7 @@
           <label for="${tier.id}-benefits">Benefits</label>
           <textarea id="${tier.id}-benefits" rows="3" onchange="updateTierField('${tier.id}', 'benefits', this.value)">${tier.benefits}</textarea>
         </div>
-        <button type="button" class="btn btn-secondary" onclick="removeTier('${tier.id}')">Remove Tier</button>
+        <button type="button" class="btn btn-secondary hidden" onclick="removeTier('${tier.id}')">Remove Tier</button>
       `;
     }
 
@@ -220,7 +224,7 @@
       console.log('Shop configuration to be saved:', shopConfig);
 
       // Simulating a successful save
-      alert('Shop configuration saved successfully!');
+      // alert('Shop configuration saved successfully!');
       
       // Optionally, redirect to the shop page or refresh the current page
       // window.location.href = '/shop';
@@ -238,14 +242,11 @@
       // This function would typically fetch the shop configuration from your backend or smart contract
       // For this example, we'll use mock data
       const mockConfig = {
-        name: "Fashion Forward",
-        description: "Your one-stop shop for the latest fashion trends and exclusive content.",
-        defaultCurrency: "EXDC",
-        commissionRate: 5,
+        name: "",
+        description: "",
+        defaultCurrency: "USDC",
         subscriptionTiers: [
-          {name: "Bronze", price: 10, duration: 30, benefits: "Access to basic content"},
-          {name: "Silver", price: 25, duration: 30, benefits: "Access to premium content and weekly newsletter"},
-          {name: "Gold", price: 50, duration: 30, benefits: "All Silver benefits plus monthly live Q&A session"}
+          {name: "Paid", price: 10, duration: 28, benefits: "Access to basic content"}
         ]
       };
 
@@ -253,7 +254,6 @@
       document.getElementById('shop-name').value = mockConfig.name;
       document.getElementById('shop-description').value = mockConfig.description;
       document.getElementById('default-currency').value = mockConfig.defaultCurrency;
-      document.getElementById('commission-rate').value = mockConfig.commissionRate;
 
       // Add subscription tiers
       mockConfig.subscriptionTiers.forEach(tier => {

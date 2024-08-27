@@ -159,3 +159,19 @@ textarea {
 .hidden {
   display: none;
 }
+
+input[type="file"] {
+  display: none;
+}
+.file-input-label {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.file-input-label:hover {
+  background-color: #8D5BE9;
+}
