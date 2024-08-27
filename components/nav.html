@@ -13,7 +13,45 @@
     <script src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
     <script src="https://exdc.cc/sdk.js" type="module"></script>
     <link rel="stylesheet" href="/styles/styles.css">
+    <style>
+    
+    body, html {
+      background-color: transparent;
+    }
+    h1 {
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: rgba(8, 6, 11, 0.8);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: 60px;
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    .nav-links a {
+      color: var(--text-color);
+      text-decoration: none;
+      margin-left: 20px;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover {
+      color: var(--primary-color);
+    }
+    </style>
   </head>
+<body>
 <nav>
   <a href="https://cryptofans.io" target="_top"><div class="logo">CryptoFans</div></a>
   <div class="nav-links" target="_top">
@@ -25,44 +63,5 @@
   </div>
 </nav>
 
-<style>
-
-.hidden {
-  display: none;
-}
-a {
-  text-decoration: none;
-}
-h1 {
-  color: var(--primary-color);
-  margin-bottom: 20px;
-  text-align: center;
-}
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  background-color: rgba(8, 6, 11, 0.8);
-  backdrop-filter: blur(10px);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  height: 60px;
-}
-.logo {
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--primary-color);
-}
-.nav-links a {
-  color: var(--text-color);
-  text-decoration: none;
-  margin-left: 20px;
-  transition: color 0.3s ease;
-}
-.nav-links a:hover {
-  color: var(--primary-color);
-}
-</style>
+</body>
 </html>
