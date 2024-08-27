@@ -1,0 +1,172 @@
+
+.container {
+  display: flex;
+  height: calc(100vh - 60px);
+}
+.logo {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+.nav-links a {
+  color: var(--text-color);
+  text-decoration: none;
+  margin-left: 20px;
+  transition: color 0.3s ease;
+}
+.nav-links a:hover {
+  color: var(--primary-color);
+}
+.sidebar {
+  width: 300px;
+  background-color: var(--card-background);
+  border-right: 1px solid var(--card-border);
+  padding: 20px;
+  overflow-y: auto;
+}
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+h2 {
+  color: var(--primary-color);
+  margin-bottom: 20px;
+}
+.chat-list, .followers-list {
+  list-style-type: none;
+}
+.chat-item, .follower-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid var(--card-border);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.chat-item:hover, .follower-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.chat-avatar, .follower-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+.chat-name, .follower-name {
+  font-weight: 600;
+}
+.chat-preview {
+  font-size: 0.8em;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.timeline {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.post {
+  background-color: var(--card-background);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  animation: fadeIn 0.5s ease-out;
+}
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.creator-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+.creator-name {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+.post-timestamp {
+  font-size: 0.8em;
+  color: #888;
+  margin-left: auto;
+}
+.post-content {
+  margin-bottom: 15px;
+}
+.post-image {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.action-btn {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 0.9em;
+}
+.action-btn svg {
+  margin-right: 5px;
+}
+.action-btn:hover {
+  color: var(--primary-color);
+}
+.token-price {
+  font-weight: 600;
+  color: var(--accent-color);
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+#animation-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 999;
+}
+.pancake, .bunny, .coin {
+  position: absolute;
+  pointer-events: none;
+}
+.pancake {
+  width: 60px;
+  height: 60px;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjMUZDN0Q0Ii8+CjxwYXRoIGQ9Ik00MCA0MEg4OFY4OEg0MFY0MFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTU2IDcySDcyVjg4SDU2Vjc3WiIgZmlsbD0iI0VENEJCRSI+PC9wYXRoPgo8L3N2Zz4=');
+  background-size: contain;
+}
+.bunny {
+  width: 80px;
+  height: 80px;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjN0M0REZGIi8+CjxwYXRoIGQ9Ik00OCA0OEg4MFY4MEg0OFY0OFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTU2IDY0SDcyVjgwSDU2VjY0WiIgZmlsbD0iI0VENEJDRSI+PC9wYXRoPgo8Y2lyY2xlIGN4PSI1NiIgY3k9IjU2IiByPSI4IiBmaWxsPSIjMDAwMDAwIi8+CjxjaXJjbGUgY3g9IjcyIiBjeT0iNTYiIHI9IjgiIGZpbGw9IiMwMDAwMDAiLz4KPC9zdmc+');
+  background-size: contain;
+}
+.coin {
+  width: 40px;
+  height: 40px;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjRkZDQjAwIi8+CjxwYXRoIGQ9Ik00MCA0MEg4OFY4OEg0MFY0MFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTYwIDUySEg2OFY3Nkg2MFY1MloiIGZpbGw9IiNGRkE2MDAiLz4KPHBhdGggZD0iTTUyIDYwSDc2VjY4SDUyVjYwWiIgZmlsbD0iI0ZGQTYwMCIvPgo8L3N2Zz4=');
+  background-size: contain;
+}
+@media screen and (max-width: 992px) {
+  .hidden-on-mobile {
+    display:none;
+  }
+  .sidebar {
+    width: 120px;
+  }
+}
