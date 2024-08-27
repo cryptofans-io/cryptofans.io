@@ -202,6 +202,14 @@
       background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjRkZDQjAwIi8+CjxwYXRoIGQ9Ik00MCA0MEg4OFY4OEg0MFY0MFoiIGZpbGw9IiNGRkYwQkYiLz4KPHBhdGggZD0iTTYwIDUySEg2OFY3Nkg2MFY1MloiIGZpbGw9IiNGRkE2MDAiLz4KPHBhdGggZD0iTTUyIDYwSDc2VjY4SDUyVjYwWiIgZmlsbD0iI0ZGQTYwMCIvPgo8L3N2Zz4=');
       background-size: contain;
     }
+    @media screen and (max-width: 992px) {
+      .hidden-on-mobile {
+        display:none;
+      }
+      .sidebar {
+        width: 120px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -212,12 +220,13 @@
       <a href="/">Creators</a>
       <a href="/content">Content</a>
       <a href="/myshop">My Shop</a>
+      <a href="/payouts">Payouts</a>
     </div>
   </nav>
 
   <div class="container">
     <div class="sidebar">
-      <h2>Chats</h2>
+      <h2 class="hidden-on-mobile">Subscriptions</h2>
       <ul class="chat-list">
         <!-- Chat list will be dynamically inserted here -->
       </ul>
@@ -321,6 +330,7 @@
       const postElement = document.createElement('div');
       postElement.classList.add('post');
 
+      postElement.addEventListener("click", ()=>postClick(post))
       const formattedDate = new Date(post.timestamp).toLocaleString();
 
       postElement.innerHTML = `
@@ -353,12 +363,25 @@
       return postElement;
     }
 
+    function postClick(post) {
+      console.info('clicked on post', post)
+      window.location.pathname = "/creator"
+    }
+
+    function chatClick(chat) {
+      console.info('clicked on chat', chat)
+      window.location.pathname = "/creator"
+    }
+
     function createChatElement(chat) {
       const chatElement = document.createElement('li');
       chatElement.classList.add('chat-item');
+      
+      chatElement.addEventListener("click", ()=>chatClick(chat))
+
       chatElement.innerHTML = `
         <img class="chat-avatar" src="${chat.avatar}" alt="${chat.name}'s avatar">
-        <div>
+        <div class="hidden-on-mobile">
           <div class="chat-name">${chat.name}</div>
           <div class="chat-preview">${chat.lastMessage}</div>
         </div>

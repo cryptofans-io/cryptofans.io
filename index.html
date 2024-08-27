@@ -37,6 +37,7 @@
     .container {
       max-width: 1200px;
       margin: 0 auto;
+      height: 100vh;
       padding: 20px;
     }
     nav {
@@ -208,6 +209,40 @@
       height: 24px;
       margin-right: 8px;
     }
+    .hero {
+      height: 30vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero > h1 {
+      font-size: 3em;
+      margin-bottom: 20px;
+      color: var(--primary-color);
+    }
+    .hero > p {
+      font-size: 1.2em;
+      max-width: 600px;
+      margin-bottom: 30px;
+    }
+    .hero > .cta-button {
+      background-color: var(--primary-color);
+      color: var(--background-color);
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 1.2em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .hero > .cta-button:hover {
+      background-color: var(--secondary-color);
+    }
   </style>
 </head>
 <body>
@@ -218,11 +253,16 @@
       <a href="/">Creators</a>
       <a href="/content">Content</a>
       <a href="/myshop">My Shop</a>
+      <a href="/payouts">Payouts</a>
     </div>
   </nav>
 
+  <div class="hero">
+    <h1>Connect with Your Favorite Creators</h1>
+    <p>Support creators, unlock exclusive content, and join a thriving anonymous community powered by the Polygon network.</p>
+  </div>    
+
   <div class="container">
-    <h1>Creators</h1>
     <div class="creator-grid">
       <!-- Creator cards will be dynamically inserted here -->
     </div>
@@ -329,7 +369,7 @@
             <span class="stat-label">Posts</span>
           </div>
         </div>
-        <a href="/creator/" class="view-timeline-btn">View Profile</a>
+        <a href="/creator/" class="view-timeline-btn">Connect</a>
         ${creator.hiddenContent ? `
           <div class="subscription-info">
             <p>Subscription: ${creator.subscriptionPrice} EXDC/month</p>

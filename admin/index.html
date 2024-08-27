@@ -1,0 +1,354 @@
+<html><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoFans Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #1FC7D4;
+      --secondary-color: #7645D9;
+      --background-color: #08060B;
+      --text-color: #F4EEFF;
+      --accent-color: #ED4B9E;
+      --card-background: #27262c;
+      --card-border: #383241;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Kanit', sans-serif;
+    }
+    body {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background-color: var(--card-background);
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    h1 {
+      color: var(--primary-color);
+      font-size: 2.5em;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    nav a {
+      color: var(--text-color);
+      text-decoration: none;
+      margin: 0 15px;
+      font-size: 1.1em;
+      transition: color 0.3s ease;
+    }
+    nav a:hover {
+      color: var(--primary-color);
+    }
+    .card {
+      background-color: var(--card-background);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    h2 {
+      color: var(--secondary-color);
+      margin-bottom: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--card-border);
+    }
+    th {
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+    }
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    .button {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: var(--background-color);
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .button:hover {
+      background-color: var(--secondary-color);
+    }
+    .chart {
+      width: 100%;
+      height: 300px;
+      margin-top: 20px;
+    }
+    #moderationQueue img {
+      max-width: 100px;
+      max-height: 100px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>CryptoFans Admin Panel</h1>
+    <nav>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#users">Users</a>
+      <a href="#content">Content</a>
+      <a href="#transactions">Transactions</a>
+      <a href="#moderation">Moderation</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <section id="dashboard" class="card">
+      <h2>Dashboard</h2>
+      <div style="display: flex; justify-content: space-between;">
+        <div>
+          <p>Total Users: <strong>10,542</strong></p>
+          <p>Active Creators: <strong>1,235</strong></p>
+          <p>Total Content Pieces: <strong>25,678</strong></p>
+        </div>
+        <div>
+          <p>Total EXDC Volume: <strong>1,234,567 EXDC</strong></p>
+          <p>Total USDC Volume: <strong>987,654 USDC</strong></p>
+          <p>Platform Revenue: <strong>56,789 EXDC</strong></p>
+        </div>
+      </div>
+      <div class="chart">
+        <canvas id="revenueChart"></canvas>
+      </div>
+    </section>
+
+    <section id="users" class="card">
+      <h2>User Management</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>alice_creator</td>
+            <td>alice@example.com</td>
+            <td>Creator</td>
+            <td>Active</td>
+            <td><button class="button">Edit</button></td>
+          </tr>
+          <tr>
+            <td>bob_fan</td>
+            <td>bob@example.com</td>
+            <td>Fan</td>
+            <td>Active</td>
+            <td><button class="button">Edit</button></td>
+          </tr>
+          <tr>
+            <td>charlie_mod</td>
+            <td>charlie@example.com</td>
+            <td>Moderator</td>
+            <td>Active</td>
+            <td><button class="button">Edit</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="content" class="card">
+      <h2>Content Management</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Creator</th>
+            <th>Type</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Crypto Market Analysis</td>
+            <td>alice_creator</td>
+            <td>Video</td>
+            <td>50 EXDC</td>
+            <td>Published</td>
+            <td><button class="button">View</button></td>
+          </tr>
+          <tr>
+            <td>NFT Collection Preview</td>
+            <td>bob_creator</td>
+            <td>Image</td>
+            <td>25 EXDC</td>
+            <td>Pending</td>
+            <td><button class="button">Review</button></td>
+          </tr>
+          <tr>
+            <td>DeFi Strategies Guide</td>
+            <td>charlie_creator</td>
+            <td>PDF</td>
+            <td>100 EXDC</td>
+            <td>Published</td>
+            <td><button class="button">View</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="transactions" class="card">
+      <h2>Transaction History</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Transaction ID</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Amount</th>
+            <th>Token</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>0x1234...5678</td>
+            <td>bob_fan</td>
+            <td>alice_creator</td>
+            <td>50</td>
+            <td>EXDC</td>
+            <td>Completed</td>
+          </tr>
+          <tr>
+            <td>0x9876...5432</td>
+            <td>charlie_fan</td>
+            <td>bob_creator</td>
+            <td>25</td>
+            <td>USDC</td>
+            <td>Completed</td>
+          </tr>
+          <tr>
+            <td>0xabcd...ef01</td>
+            <td>david_fan</td>
+            <td>charlie_creator</td>
+            <td>100</td>
+            <td>EXDC</td>
+            <td>Pending</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="moderation" class="card">
+      <h2>Content Moderation Queue</h2>
+      <table id="moderationQueue">
+        <thead>
+          <tr>
+            <th>Content</th>
+            <th>Creator</th>
+            <th>Type</th>
+            <th>Submitted</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><img src="https://cryptofans.io/content/preview1.jpg" alt="Content preview"></td>
+            <td>alice_creator</td>
+            <td>Image</td>
+            <td>2023-06-15 14:30</td>
+            <td>
+              <button class="button" style="background-color: #4CAF50;">Approve</button>
+              <button class="button" style="background-color: #f44336;">Reject</button>
+            </td>
+          </tr>
+          <tr>
+            <td><img src="https://cryptofans.io/content/preview2.jpg" alt="Content preview"></td>
+            <td>bob_creator</td>
+            <td>Video</td>
+            <td>2023-06-15 15:45</td>
+            <td>
+              <button class="button" style="background-color: #4CAF50;">Approve</button>
+              <button class="button" style="background-color: #f44336;">Reject</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <script>
+    // Revenue Chart
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'EXDC Revenue',
+          data: [12000, 19000, 15000, 25000, 22000, 30000],
+          borderColor: '#1FC7D4',
+          tension: 0.1
+        }, {
+          label: 'USDC Revenue',
+          data: [10000, 15000, 13000, 20000, 18000, 25000],
+          borderColor: '#7645D9',
+          tension: 0.1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    // Simulated admin actions
+    document.querySelectorAll('.button').forEach(button => {
+      button.addEventListener('click', function() {
+        const action = this.textContent;
+        const row = this.closest('tr');
+        let message = '';
+
+        if (action === 'Edit') {
+          const username = row.cells[0].textContent;
+          message = `Editing user: ${username}`;
+        } else if (action === 'View' || action === 'Review') {
+          const content = row.cells[0].textContent;
+          message = `${action}ing content: ${content}`;
+        } else if (action === 'Approve' || action === 'Reject') {
+          const creator = row.cells[1].textContent;
+          message = `${action}ing content from: ${creator}`;
+        }
+
+        alert(message);
+      });
+    });
+  </script>
+</body></html>
