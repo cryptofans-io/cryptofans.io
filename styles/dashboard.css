@@ -129,6 +129,11 @@ h2 {
   font-weight: 600;
   color: var(--accent-color);
 }
+.post-author {
+  display: flex;
+  flex-direction: row;
+  line-height: 50px;
+}
 @media screen and (max-width: 992px) {
   .hidden-on-mobile {
     display:none;

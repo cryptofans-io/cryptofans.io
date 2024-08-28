@@ -44,6 +44,8 @@ h2 {
   margin-bottom: 20px;    
   display: flex;
   flex-direction: column;
+  z-index: 100;
+  position: relative;
 }
 .form-group {
   margin-bottom: 20px;
@@ -174,4 +176,10 @@ input[type="file"] {
 }
 .file-input-label:hover {
   background-color: #8D5BE9;
+}
+
+@media screen and (max-width: 992px) {
+  h2 {
+    font-size: 1em;
+  }
 }
