@@ -10,7 +10,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.5.2/web3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
-  <script src="https://exdc.cc/sdk.js" type="module"></script>
+  <script id="exdc" src="https://exdc.cc/sdk.js" type="module"></script>
   <link rel="stylesheet" href="/styles/styles.css">
   <link rel="stylesheet" href="/styles/content.css">
   <script src="/anim.js"></script>
@@ -20,131 +20,74 @@
 
   <div class="container">
     <h1>Content Management</h1>
-    <a href="/content/add"><button class="new-content-btn">+ Create New Content</button></a>
     
-    <div class="content-grid">
-      <div class="content-card">
-        <div class="content-type">Article</div>
-        <h3 class="content-title">Summer Fashion Trends 2023</h3>
-        <p class="content-preview">Get ready for the hottest summer trends! From neon colors to oversized accessories...</p>
-        <div class="content-status">
-          <span><span class="status-indicator status-published"></span>Published</span>
-          <span>2 hours ago</span>
-        </div>
-        <div class="content-actions">
-          <button class="action-btn">Edit</button>
-          <button class="action-btn">Unpublish</button>
-        </div>
-      </div>
+    <div class="empty-state" id="empty-state">
+      <div class="empty-state-icon">📝</div>
+      <p class="empty-state-text">You haven't created any content yet. Start sharing your creativity with the world!</p>
+      <a href="/content/add" class="new-content-btn">Create Your First Content</a>
+    </div>
 
-      <div class="content-card">
-        <div class="content-type">Exclusive Post</div>
-        <h3 class="content-title">Designer Collaboration Sneak Peek</h3>
-        <p class="content-preview">Exclusive behind-the-scenes look at our upcoming designer collaboration...</p>
-        <div class="content-status">
-          <span><span class="status-indicator status-published"></span>Published (Subscriber Only)</span>
-          <span>1 day ago</span>
-        </div>
-        <div class="content-actions">
-          <button class="action-btn">Edit</button>
-          <button class="action-btn">Make Public</button>
-        </div>
-      </div>
-
-      <div class="content-card">
-        <div class="content-type">Video</div>
-        <h3 class="content-title">How to Style Oversized Blazers</h3>
-        <p class="content-preview">Learn 5 different ways to style oversized blazers for any occasion...</p>
-        <div class="content-status">
-          <span><span class="status-indicator status-draft"></span>Draft</span>
-          <span>Last edited 3 days ago</span>
-        </div>
-        <div class="content-actions">
-          <button class="action-btn">Edit</button>
-          <button class="action-btn">Publish</button>
-        </div>
-      </div>
-
-      <div class="content-card">
-        <div class="content-type">Live Stream</div>
-        <h3 class="content-title">Q&A: Ask Me Anything About Fashion</h3>
-        <p class="content-preview">Join me for a live Q&A session where I'll answer all your fashion-related questions...</p>
-        <div class="content-status">
-          <span><span class="status-indicator status-scheduled"></span>Scheduled</span>
-          <span>Starts in 2 days</span>
-        </div>
-        <div class="content-actions">
-          <button class="action-btn">Edit</button>
-          <button class="action-btn">Cancel</button>
-        </div>
-      </div>
-
-      <div class="content-card">
-        <div class="content-type">Poll</div>
-        <h3 class="content-title">Favorite Summer Accessory?</h3>
-        <p class="content-preview">Vote for your favorite summer accessory: Sunglasses, Hat, Beach Bag, or Sandals...</p>
-        <div class="content-status">
-          <span><span class="status-indicator status-published"></span>Active</span>
-          <span>Ends in 5 days</span>
-        </div>
-        <div class="content-actions">
-          <button class="action-btn">View Results</button>
-          <button class="action-btn">End Poll</button>
-        </div>
-      </div>
-
-      <div class="content-card">
-        <div class="content-type">Tutorial</div>
-        <h3 class="content-title">DIY Crop Top from Old T-Shirt</h3>
-        <p class="content-preview">Learn how to upcycle your old t-shirts into trendy crop tops with this easy tutorial...</p>
-        <div class="content-status">
-          <span><span class="status-indicator status-draft"></span>Draft</span>
-          <span>Last edited 1 week ago</span>
-        </div>
-        <div class="content-actions">
-          <button class="action-btn">Edit</button>
-          <button class="action-btn">Delete</button>
-        </div>
-      </div>
+    <a href="/content/add" id="non-empty-button" class="hidden"><button class="new-content-btn">+ Create New Content</button></a>
+    <div class="content-grid hidden" id="content-grid">
     </div>
   </div>
 
   <div id="animation-container"></div>
   <embed type="text/html" src="/components/footer.html" class="embed-footer">
-
+  <script src="/js/common.js"></script>
   <script>
 
-    // Web3 integration
-    window.addEventListener('load', async () => {
-      if (window.ethereum) {
-        window.web3 = new Web3(ethereum);
-        try {
-          await ethereum.enable();
-          console.log("Web3 initialized!");
-        } catch (error) {
-          console.error("User denied account access");
-        }
-      } else if (window.web3) {
-        window.web3 = new Web3(web3.currentProvider);
-        console.log("Web3 initialized!");
-      } else {
-        console.log('Non-Ethereum browser detected. Consider trying MetaMask!');
-      }
-    });
-
-    // Content management functionality
-    // document.querySelector('.new-content-btn').addEventListener('click', () => {
-    //   // Here you would typically open a modal or navigate to a new content creation page
-    //   alert('Opening new content creation form...');
-    // });
-
-    document.querySelectorAll('.action-btn').forEach(btn => {
+    const initPostActions = () => {
+      document.querySelectorAll('.action-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const action = e.target.textContent;
         const contentTitle = e.target.closest('.content-card').querySelector('.content-title').textContent;
-        alert(`${action} action for "${contentTitle}"`);
-        // Here you would typically call a function to handle the specific action
+          alert(`${action} action for "${contentTitle}"`);
+          // Here you would typically call a function to handle the specific action
+        });
       });
-    });
+    }
+    const loadExistingContent = async () => {
+      const content = await getContractData()
+      console.info('content', content)
+      if(content?.posts?.length) {
+        document.getElementById('empty-state').className = "hidden"
+        document.getElementById('non-empty-button').className = ""
+        document.getElementById('content-grid').className = "content-grid"
+        const posts = content?.posts?.map(post=>drawContent(post)).join("")
+        document.getElementById('content-grid').innerHTML = posts
+        initPostActions()
+      }
+    }
+    const statuses = `
+      <span><span class="status-indicator status-published"></span>Published (Subscriber Only)</span>
+      <span><span class="status-indicator status-scheduled"></span>Scheduled</span>
+      <span><span class="status-indicator status-published"></span>Active</span>
+      <span><span class="status-indicator status-draft"></span>Draft</span>
+      <button class="action-btn">Publish</button>
+    `
+    const drawContent = (post) => {
+      return `
+        <div class="content-card">
+          <div class="content-type">${post['content-type']}</div>
+          <h3 class="content-title">${post.title}</h3>
+          <p class="content-preview">${post.description}</p>
+          <div class="content-status">
+            <span><span class="status-indicator status-${post.status}"></span>${post.status || 'Active'}</span>
+            <span>${post['content-publish-date']}</span>
+          </div>
+          <div class="content-actions">
+            <button class="action-btn">Edit</button>
+          </div>
+        </div>
+      `
+    }
+    const EXDCscript = document.querySelector('#exdc');
+    EXDCscript.addEventListener('load', function() {
+      window.exdc = new EXDC_SDK()
+      exdc.checkMetaMask()
+      .then(()=>validateSubscription())
+      .then(()=>loadExistingContent())
+    })
   </script>
 </body></html>

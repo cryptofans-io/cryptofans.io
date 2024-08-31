@@ -32,72 +32,6 @@
   <embed type="text/html" src="/components/footer.html" class="embed-footer">
 
   <script>
-    const creators = [
-      {
-        name: "PixelMaster",
-        avatar: "/img/pixelmaster.webp",
-        followers: 15000,
-        posts: 342,
-        subscriptionPrice: 10,
-        hiddenContent: true
-      },
-      {
-        name: "MusicMaven",
-        avatar: "/img/musicmaven.webp",
-        followers: 22000,
-        posts: 178,
-        subscriptionPrice: 15,
-        hiddenContent: true
-      },
-      {
-        name: "CryptoQueen",
-        avatar: "/img/cryptoqueen.webp",
-        followers: 50000,
-        posts: 512,
-        subscriptionPrice: 25,
-        hiddenContent: true
-      },
-      {
-        name: "VirtualVoyager",
-        avatar: "/img/virtualvoyager.webp",
-        followers: 18000,
-        posts: 230,
-        subscriptionPrice: 12,
-        hiddenContent: false
-      },
-      {
-        name: "CodeCrafter",
-        avatar: "/img/codecrafter.webp",
-        followers: 12000,
-        posts: 156,
-        subscriptionPrice: 8,
-        hiddenContent: true
-      },
-      {
-        name: "ArtisticSoul",
-        avatar: "/img/artistic.webp",
-        followers: 30000,
-        posts: 420,
-        subscriptionPrice: 20,
-        hiddenContent: true
-      },
-      {
-        name: "TechGuru",
-        avatar: "/img/techguru.webp",
-        followers: 40000,
-        posts: 280,
-        subscriptionPrice: 18,
-        hiddenContent: false
-      },
-      {
-        name: "FashionIcon",
-        avatar: "/img/fashion.webp",
-        followers: 60000,
-        posts: 890,
-        subscriptionPrice: 30,
-        hiddenContent: true
-      }
-    ];
 
     const creatorGrid = document.querySelector('.creator-grid');
 
@@ -118,7 +52,7 @@
             <span class="stat-label">Posts</span>
           </div>
         </div>
-        <a href="/creator/" class="view-timeline-btn">Connect</a>
+        <a href="/creator/?id=${creator.id}" class="view-timeline-btn">Connect</a>
         ${creator.hiddenContent ? `
           <div class="subscription-info">
             <p>Subscription: ${creator.subscriptionPrice} EXDC/month</p>
@@ -130,10 +64,24 @@
       return card;
     }
 
-    creators.forEach(creator => {
-      const creatorCard = createCreatorCard(creator);
-      creatorGrid.appendChild(creatorCard);
-    });
+    const fetchCreators = async () => {
+      const authors = await(await fetch("https://cryptofans.io/api/home")).json()
+      const creators = authors.map((a)=>({
+        ...a.n, 
+        avatar:a.n?.avatarUrl, 
+        hiddenContent:true, 
+        posts:a.n?.posts?.length || 0,
+        followers:a.n?.followers || 0,
+        subscriptionPrice:a.n?.subscriptionTiers[0].price,
+        id:a.id
+      }))
+
+      creators.forEach(creator => {
+        const creatorCard = createCreatorCard(creator);
+        creatorGrid.appendChild(creatorCard);
+      });
+    }
+    fetchCreators()
   </script>
   <script src="anim.js"></script>
 </body></html>

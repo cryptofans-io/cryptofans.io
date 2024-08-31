@@ -1,21 +1,3 @@
-let cfans = ""
-const validateSubscription = async () => {
-  try {
-    cfans = await exdc.getCryptoFansAddress()
-    const info = await exdc.getServicePaymentInfo(cfans)
-    console.info('info', info)
-    // console.info('subscription', subscription)
-    const isServiceValid = await exdc.checkServiceValid(cfans)
-    console.info('isvalid', isServiceValid)
-    if(isServiceValid === true) {
-      document.getElementById("pay-modal").className = "hidden";
-      // Load existing configuration when the page loads
-      loadExistingConfig();
-    }
-  } catch(err) {
-    console.error('err', err)
-  }
-}
 const buyButton = document.getElementById("buyButton")
 buyButton.addEventListener("click", async ()=>{
   const smart = await exdc.buyServiceSmart(cfans)
@@ -27,13 +9,6 @@ buyButton.addEventListener("click", async ()=>{
   }
 })
 
-const EXDCscript = document.querySelector('#exdc');
-EXDCscript.addEventListener('load', function() {
-  window.exdc = new EXDC_SDK()
-  exdc.checkMetaMask().then(()=>{
-    validateSubscription()
-  })
-})
 
 
 // Subscription tier management
@@ -148,7 +123,8 @@ document.getElementById('shop-config-form').addEventListener('submit', async (e)
   const cadress = await exdc.currentShopContract(cfans, exdc.getProvider().address)
   const service = await exdc.connectToExchangeService(cadress)
   const abiCoder = new ethers.AbiCoder()
-  const json = JSON.stringify(shopConfig)
+  const oldData = await getContractData()
+  const json = JSON.stringify({...shopConfig, posts:oldData.posts})
   
   const body = abiCoder.encode(["string"], [json])
   await (await service.changeUserData(body)).wait(1)
@@ -166,16 +142,16 @@ document.getElementById('cancel-btn').addEventListener('click', () => {
   }
 });
 
+const mockConfig = {
+  name: "",
+  description: "",
+  defaultCurrency: "USDC",
+  subscriptionTiers: [
+    {name: "Paid", price: 10, duration: 28, benefits: "Access to basic content"}
+  ]
+};
 // Load existing shop configuration
 const enableMock = () => {
-  const mockConfig = {
-    name: "",
-    description: "",
-    defaultCurrency: "USDC",
-    subscriptionTiers: [
-      {name: "Paid", price: 10, duration: 28, benefits: "Access to basic content"}
-    ]
-  };
 
   // Populate form fields
   document.getElementById('shop-name').value = mockConfig.name;
@@ -210,13 +186,14 @@ async function loadExistingConfig() {
       document.getElementById('shop-description').value = info?.description || "";
       document.getElementById('default-currency').value = info?.defaultCurrency || "USDC";
       const avatar = document.getElementById("profile-avatar")
-      if(info.avatarUrl)
+      if(info.avatarUrl) {
           avatar.src = ((url)=>url)(info.avatarUrl);
-
+      }
       // Add subscription tiers
-      (info || mockConfig).subscriptionTiers.forEach(tier => {
+      (info?.subscriptionTiers?.length ? info : mockConfig).subscriptionTiers.forEach(tier => {
         addTier(tier.name, tier.price, tier.duration, tier.benefits);
       });
+      tiers = (info?.subscriptionTiers?.length ? info : mockConfig).subscriptionTiers
       return;
     }
   } catch(err) {
@@ -226,37 +203,10 @@ async function loadExistingConfig() {
 }
 
 
-const uploadFile = async (e) => {
-  // console.info('file', e.value, e.files[0])
-  const file = e.files[0]
-  const {signer} = (await exdc.getProvider())
-  console.info('signer', signer)
-  const payload = JSON.stringify({size:file.size, name:file.name})
-  const userContractAddress = await exdc.currentShopContract(cfans, exdc.getProvider().address)
-  const signature = await signer.signMessage(payload)
-  console.info("signature", signature)
-  const recovered = ethers.verifyMessage(payload, signature);
-  console.info("recovered", recovered)
-  const data = new FormData()
-  data.append('file', file)
-  data.append('payload', payload)
-  data.append('signature', signature)
-  data.append('userContractAddress', userContractAddress)
-  try {
-
-    const req = await fetch(`https://cryptofans.io/api/file/upload`, {
-      method: 'POST',
-      body: data
-    })
-    const res = await req.json()
-  
-    console.info('file upload json', res)
-  
-  } catch(err) {
-
-  }  
-  const url = `https://cdn.cryptofans.io/${userContractAddress}/${file.name}`
-  console.info(url)
-  document.getElementById("profile-avatar").src = url
-  return res
-}
+const EXDCscript = document.querySelector('#exdc');
+EXDCscript.addEventListener('load', function() {
+  window.exdc = new EXDC_SDK()
+  exdc.checkMetaMask()
+  .then(()=>validateSubscription())
+  .then(()=>loadExistingConfig())
+})

@@ -151,6 +151,13 @@ h1 {
   position: relative;
   overflow: hidden;
 }
+
+@media screen and (max-width: 792px) {
+  .hero {
+    height: 70vh;
+  }
+}
+
 .hero > h1 {
   font-size: 3em;
   margin-bottom: 20px;

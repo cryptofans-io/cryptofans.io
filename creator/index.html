@@ -19,20 +19,20 @@
   <embed type="text/html" src="/components/nav.html" class="embed-nav">
   <div class="container">
     <div class="profile-header">
-      <img src="/img/fashion.webp" alt="FashionIcon's avatar" class="profile-avatar">
+      <img src="" alt="FashionIcon's avatar" id="profile-avatar" class="profile-avatar">
       <div class="profile-info">
-        <h1 class="profile-name">FashionIcon</h1>
+        <h1 class="profile-name" id="profile-name"></h1>
         <div class="profile-stats">
           <div class="stat">
-            <span class="stat-value">60,000</span>
+            <span class="stat-value" id="profile-followers">60,000</span>
             <span class="stat-label">Followers</span>
           </div>
           <div class="stat">
-            <span class="stat-value">890</span>
+            <span class="stat-value" id="profile-posts">890</span>
             <span class="stat-label">Posts</span>
           </div>
           <div class="stat">
-            <span class="stat-value">30 EXDC</span>
+            <span class="stat-value" id="profile-subscriptions">30 EXDC</span>
             <span class="stat-label">Monthly</span>
           </div>
         </div>
@@ -40,8 +40,8 @@
     </div>
 
     <div class="subscription-info">
-      <p>Unlock exclusive fashion content and behind-the-scenes looks!</p>
-      <button class="subscribe-btn">Subscribe for 30 EXDC/month</button>
+      <p>Unlock exclusive content and behind-the-scenes looks!</p>
+      <button class="subscribe-btn" id="subscribe-btn">Subscribe for <span id="subs-price">30</span> EXDC/month</button>
     </div>
 
     <div class="timeline">
@@ -127,7 +127,22 @@
   <embed type="text/html" src="/components/footer.html" class="embed-footer">
 
   <script>
-
+    const id = new URL(window.location.href).searchParams.get("id")
+    console.info('id', id)
+    fetch("https://cryptofans.io/api/creator?id="+id).then((res)=>res.json()).then(info=>{
+      console.info('creator', info)
+      document.getElementById('profile-name').innerHTML = info?.n.name || "";
+      document.getElementById('profile-followers').innerHTML = info?.n.followers || 0;
+      // document.getElementById('shop-description').value = info?.n.description || "";
+      document.getElementById('profile-posts').innerHTML = info?.n.posts?.length || 0
+      document.getElementById('profile-subscriptions').innerHTML = info.n?.subscriptionTiers[0].price || 30
+      document.getElementById('subs-price').innerHTML = info.n?.subscriptionTiers[0].price || 30
+      // document.getElementById('default-currency').value = info?.defaultCurrency || "USDC";
+      const avatar = document.getElementById("profile-avatar")
+      if(info.n.avatarUrl) {
+          avatar.src = ((url)=>url)(info.n.avatarUrl);
+      }
+    })
     // Web3 integration
     window.addEventListener('load', async () => {
       if (window.ethereum) {

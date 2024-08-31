@@ -118,3 +118,17 @@ h1 {
 .new-content-btn:hover {
   background-color: #ff6bbc;
 }
+
+.empty-state {
+  text-align: center;
+}
+.empty-state-icon {
+  font-size: 80px;
+  margin-bottom: 20px;
+  color: var(--secondary-color);
+}
+.empty-state-text {
+  font-size: 1.2em;
+  margin-bottom: 30px;
+  color: var(--text-color);
+}
