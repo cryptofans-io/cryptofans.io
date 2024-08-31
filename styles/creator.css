@@ -22,6 +22,7 @@
   font-size: 2em;
   color: var(--primary-color);
   margin-bottom: 10px;
+  text-align: left;
 }
 .profile-stats {
   display: flex;
