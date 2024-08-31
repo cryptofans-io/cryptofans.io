@@ -44,27 +44,9 @@
       <button class="subscribe-btn" id="subscribe-btn">Subscribe for <span id="subs-price">30</span> EXDC/month</button>
     </div>
 
-    <div class="timeline">
-      <div class="post">
-        <div class="post-header">
-          <h3>Summer Fashion Trends 2023</h3>
-          <span class="post-date">2 hours ago</span>
-        </div>
-        <div class="post-content">
-          <p>Get ready for the hottest summer trends! From neon colors to oversized accessories, here's what you need to know.</p>
-          <img src="/img/summer2024.webp" alt="Summer Fashion Trends 2023" class="post-image">
-        </div>
-        <div class="post-footer">
-          <div class="post-actions">
-            <button class="action-btn">❤️ 1.2k</button>
-            <button class="action-btn">💬 234</button>
-            <button class="action-btn">🔗 Share</button>
-          </div>
-          <span>Free Content</span>
-        </div>
-      </div>
+    <div class="timeline" id="timeline">
 
-      <div class="post">
+      <!-- <div class="post">
         <div class="post-header">
           <h3>Exclusive: Designer Collaboration Sneak Peek</h3>
           <span class="post-date">1 day ago</span>
@@ -119,7 +101,7 @@
           </div>
           <span>Subscriber Only</span>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 
@@ -137,12 +119,33 @@
       document.getElementById('profile-posts').innerHTML = info?.n.posts?.length || 0
       document.getElementById('profile-subscriptions').innerHTML = info.n?.subscriptionTiers[0].price || 30
       document.getElementById('subs-price').innerHTML = info.n?.subscriptionTiers[0].price || 30
-      // document.getElementById('default-currency').value = info?.defaultCurrency || "USDC";
+      document.getElementById('timeline').innerHTML = info.n?.posts?.map(i=>generatePost(i)).join("")
       const avatar = document.getElementById("profile-avatar")
       if(info.n.avatarUrl) {
           avatar.src = ((url)=>url)(info.n.avatarUrl);
       }
     })
+    const generatePost = (post) => {
+      return `
+      <div class="post">
+        <div class="post-header">
+          <h3>${post.title}</h3>
+          <span class="post-date">${post['content-publish-date']}</span>
+        </div>
+        <div class="post-content">
+          <p>${post.description}</p>
+          <img src="${post.src}" alt="${post.title}" class="post-image">
+        </div>
+        <div class="post-footer">
+          <div class="post-actions">
+            <!-- <button class="action-btn">❤️ 1.2k</button>
+            <button class="action-btn">💬 234</button> -->
+            <button class="action-btn" onclick="onshare(${post.id})">🔗 Share</button>
+          </div>
+          <span>Free Content</span>
+        </div>
+      </div>`
+    }
     // Web3 integration
     window.addEventListener('load', async () => {
       if (window.ethereum) {
