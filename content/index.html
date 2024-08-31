@@ -3,6 +3,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Content Management - CryptoFans</title>
 	<meta name="description" content="CryptoFans - Create and Share Content with any Token on Polygon network">
+  <link rel="favicon" type="image/png" href="/favicon.png">
+  <link rel="shortcut icon" href="/favicon-250.png">
+  <link rel="icon" type="image/png" href="/favicon-250.png">
+  <meta name=”robots” content="index, follow">
 	<meta name="img" content="https://cryptofans.io/img/preview.png">
   <meta property="og:image" content="https://cryptofans.io/img/preview.png">
   <meta name="twitter:image" content="https://cryptofans.io/img/preview.png">
@@ -18,6 +22,12 @@
 <body>
   <embed type="text/html" src="/components/nav.html" class="embed-nav">
 
+  <div id="preloader">
+    <div class="loader">
+      <div class="loader-pancake"></div>
+      <div class="loader-coin"></div>
+    </div>
+  </div>
   <div class="container">
     <h1>Content Management</h1>
     
@@ -36,38 +46,47 @@
   <embed type="text/html" src="/components/footer.html" class="embed-footer">
   <script src="/js/common.js"></script>
   <script>
+    let posts = [];
+    let content = {};
+    const deleteItem = async (itemId) => {
+      content = await getContractData()
+      const filtered = posts.filter(p=>p.id !== itemId)
+      content.posts = filtered;
+      console.info("writing content",content)
+      await writeContractData(content)
+      await loadExistingContent()
+    }
 
-    const initPostActions = () => {
-      document.querySelectorAll('.action-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const action = e.target.textContent;
-        const contentTitle = e.target.closest('.content-card').querySelector('.content-title').textContent;
-          alert(`${action} action for "${contentTitle}"`);
-          // Here you would typically call a function to handle the specific action
-        });
-      });
+    const editItem = (itemId) => {
+      // const filtered = posts.filter(p=>p.id !==itemId)
+      // console.info(post)
     }
     const loadExistingContent = async () => {
-      const content = await getContractData()
-      console.info('content', content)
-      if(content?.posts?.length) {
-        document.getElementById('empty-state').className = "hidden"
-        document.getElementById('non-empty-button').className = ""
-        document.getElementById('content-grid').className = "content-grid"
-        const posts = content?.posts?.map(post=>drawContent(post)).join("")
-        document.getElementById('content-grid').innerHTML = posts
-        initPostActions()
+      try {
+        content = await getContractData()
+        console.info('content', content)
+        if(content?.posts?.length) {
+          document.getElementById('empty-state').className = "hidden"
+          document.getElementById('non-empty-button').className = ""
+          document.getElementById('content-grid').className = "content-grid"
+          posts = content?.posts
+          const postsHtml = content?.posts?.map(post=>drawContent(post)).join("")
+          document.getElementById('content-grid').innerHTML = postsHtml
+        }
+      } catch(err) {
+        console.error('loading content error', err)
       }
+      hidePreloader()
     }
-    const statuses = `
+    const statuses = (post)=>`
       <span><span class="status-indicator status-published"></span>Published (Subscriber Only)</span>
       <span><span class="status-indicator status-scheduled"></span>Scheduled</span>
       <span><span class="status-indicator status-published"></span>Active</span>
       <span><span class="status-indicator status-draft"></span>Draft</span>
       <button class="action-btn">Publish</button>
+      <button class="action-btn" onclick="editItem('${post.id}')">Edit</button>
     `
-    const drawContent = (post) => {
-      return `
+    const drawContent = (post) => `
         <div class="content-card">
           <div class="content-type">${post['content-type']}</div>
           <h3 class="content-title">${post.title}</h3>
@@ -77,11 +96,11 @@
             <span>${post['content-publish-date']}</span>
           </div>
           <div class="content-actions">
-            <button class="action-btn">Edit</button>
+            <button class="action-btn" onclick="deleteItem('${post.id}')">Delete</button>
           </div>
         </div>
       `
-    }
+    
     const EXDCscript = document.querySelector('#exdc');
     EXDCscript.addEventListener('load', function() {
       window.exdc = new EXDC_SDK()

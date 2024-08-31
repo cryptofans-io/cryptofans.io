@@ -3,6 +3,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FashionIcon's Timeline - CryptoFans</title>
 	<meta name="description" content="CryptoFans - Create and Share Content with any Token on Polygon network">
+  <link rel="favicon" type="image/png" href="/favicon.png">
+  <link rel="shortcut icon" href="/favicon-250.png">
+  <link rel="icon" type="image/png" href="/favicon-250.png">
+  <meta name=”robots” content="index, follow">
 	<meta name="img" content="https://cryptofans.io/img/preview.png">
   <meta property="og:image" content="https://cryptofans.io/img/preview.png">
   <meta name="twitter:image" content="https://cryptofans.io/img/preview.png">
@@ -10,13 +14,20 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.5.2/web3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
-  <script src="https://exdc.cc/sdk.js" type="module"></script>
+  <script id="exdc" src="https://exdc.cc/sdk.js" type="module"></script>
   <link rel="stylesheet" href="/styles/styles.css">
   <link rel="stylesheet" href="/styles/creator.css">
   <script src="/anim.js"></script>
+  <script src="/js/common.js"></script>
 </head>
 <body>
   <embed type="text/html" src="/components/nav.html" class="embed-nav">
+  <div id="preloader">
+    <div class="loader">
+      <div class="loader-pancake"></div>
+      <div class="loader-coin"></div>
+    </div>
+  </div>
   <div class="container">
     <div class="profile-header">
       <img src="" alt="FashionIcon's avatar" id="profile-avatar" class="profile-avatar">
@@ -109,6 +120,10 @@
   <embed type="text/html" src="/components/footer.html" class="embed-footer">
 
   <script>
+    // window.addEventListener('load', function() {
+      const preloader = document.getElementById('preloader');
+    // });
+
     const id = new URL(window.location.href).searchParams.get("id")
     console.info('id', id)
     fetch("https://cryptofans.io/api/creator?id="+id).then((res)=>res.json()).then(info=>{
@@ -119,12 +134,15 @@
       document.getElementById('profile-posts').innerHTML = info?.n.posts?.length || 0
       document.getElementById('profile-subscriptions').innerHTML = info.n?.subscriptionTiers[0].price || 30
       document.getElementById('subs-price').innerHTML = info.n?.subscriptionTiers[0].price || 30
-      document.getElementById('timeline').innerHTML = info.n?.posts?.map(i=>generatePost(i)).join("")
+      document.getElementById('timeline').innerHTML = info.n?.posts?.map(i=>generatePost(i)).reverse().join("") || ""
       const avatar = document.getElementById("profile-avatar")
       if(info.n.avatarUrl) {
           avatar.src = ((url)=>url)(info.n.avatarUrl);
       }
+      return true;
     })
+    .then(()=>hidePreloader())
+    .catch(()=>hidePreloader())
     const generatePost = (post) => {
       return `
       <div class="post">
@@ -146,39 +164,28 @@
         </div>
       </div>`
     }
-    // Web3 integration
-    window.addEventListener('load', async () => {
-      if (window.ethereum) {
-        window.web3 = new Web3(ethereum);
-        try {
-          await ethereum.enable();
-          console.log("Web3 initialized!");
-        } catch (error) {
-          console.error("User denied account access");
+    const subBtn = document.querySelector('.subscribe-btn')
+    const EXDCscript = document.querySelector('#exdc');
+    EXDCscript.addEventListener('load', function() {
+      window.exdc = new EXDC_SDK()
+      exdc.checkMetaMask()
+      .then(async ()=>{
+        const subId = await getMyShop(id)
+        const isServiceValid = await exdc.checkServiceValid(subId)
+        if(isServiceValid === true) {
+          subBtn.innerHTML = "Subscribed"
+          subBtn.setAttribute('disabled', true)
         }
-      } else if (window.web3) {
-        window.web3 = new Web3(web3.currentProvider);
-        console.log("Web3 initialized!");
-      } else {
-        console.log('Non-Ethereum browser detected. Consider trying MetaMask!');
-      }
-    });
-
+      })
+    })
     // Subscribe button functionality
-    document.querySelector('.subscribe-btn').addEventListener('click', async () => {
+    subBtn.addEventListener('click', async () => {
       if (window.web3) {
         try {
-          const accounts = await web3.eth.getAccounts();
-          const exdcTokenAddress = '0x123456789...'; // Replace with actual EXDC token contract address
-          const exdcTokenABI = []; // Replace with actual EXDC token ABI
-
-          const exdcToken = new web3.eth.Contract(exdcTokenABI, exdcTokenAddress);
-          const subscriptionAmount = web3.utils.toWei('30', 'ether'); // 30 EXDC
-
-          await exdcToken.methods.approve(window.location.origin, subscriptionAmount).send({ from: accounts[0] });
-          // Here you would typically call a backend API to process the subscription
-          console.log('Subscription successful!');
-          alert('You have successfully subscribed to FashionIcon!');
+          const subId = await getMyShop(id)
+          const smart = await exdc.buyServiceSmart(subId)
+          const isServiceValid = await exdc.checkServiceValid(subId)
+          alert('Subscription successful. Please reload page to view hidden content.');
         } catch (error) {
           console.error('Subscription failed:', error);
           alert('Subscription failed. Please try again.');

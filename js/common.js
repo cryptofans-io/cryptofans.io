@@ -7,13 +7,9 @@ const validateSubscription = async () => {
     console.info('info', info)
     // console.info('subscription', subscription)
     const isServiceValid = await exdc.checkServiceValid(cfans)
-    console.info('isvalid', isServiceValid)
     const payModal = document.getElementById("pay-modal")
     if(isServiceValid === true && payModal) {
       payModal.className = "hidden";
-      // Load existing configuration when the page loads
-      if(cb) cb()
-      // loadExistingConfig();
     }
   } catch(err) {
     console.error('err', err)
@@ -59,10 +55,11 @@ const getContractData = async () => {
   const cadress = await exdc.currentShopContract(cfans, exdc.getProvider().address)
   const service = await exdc.connectToExchangeService(cadress)
   const contract = await service.userData()
+  const services = await service.getServices()
   const abiCoder = new ethers.AbiCoder()
   const body = abiCoder.decode(["string"], contract)
   const info = JSON.parse(body)
-  return info
+  return {...info, services}
 }
 
 const writeContractData = async (data) => {
@@ -74,4 +71,17 @@ const writeContractData = async (data) => {
   
   const body = abiCoder.encode(["string"], [json])
   await (await service.changeUserData(body)).wait(1)
+}
+
+const hidePreloader = () => {
+  setTimeout(() => {
+    preloader.style.opacity = '0';
+    preloader.style.display = 'none';
+  }, 1500);
+}
+
+const getMyShop = async (subContract) => {
+  const sub = await exdc.connectToExchangeService(subContract);
+  const contractAddress = await sub.services(0)
+  return contractAddress
 }

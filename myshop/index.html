@@ -3,6 +3,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shop Configuration - CryptoFans</title>
 	<meta name="description" content="CryptoFans - Create and Share Content with any Token on Polygon network">
+  <link rel="favicon" type="image/png" href="/favicon.png">
+  <link rel="shortcut icon" href="/favicon-250.png">
+  <link rel="icon" type="image/png" href="/favicon-250.png">
+  <meta name=”robots” content="index, follow">
 	<meta name="img" content="https://cryptofans.io/img/preview.png">
   <meta property="og:image" content="https://cryptofans.io/img/preview.png">
   <meta name="twitter:image" content="https://cryptofans.io/img/preview.png">
@@ -17,6 +21,12 @@
 </head>
 <body>
   <embed type="text/html" src="/components/nav.html" class="embed-nav">
+  <div id="preloader">
+    <div class="loader">
+      <div class="loader-pancake"></div>
+      <div class="loader-coin"></div>
+    </div>
+  </div>
   <div class="container">
 
     <div class="overlay" id="pay-modal">
@@ -50,7 +60,7 @@
       <div class="form-group">
         <label for="default-currency">Currency</label>
         <select id="default-currency" name="default-currency" required>
-          <option value="USDC">USDC</option>
+          <option value="EXDC">EXDC</option>
         </select>
       </div>
 

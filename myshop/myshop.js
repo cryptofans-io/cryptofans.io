@@ -6,7 +6,10 @@ buyButton.addEventListener("click", async ()=>{
     document.getElementById("pay-modal").className = "hidden";
     // Load existing configuration when the page loads
     loadExistingConfig();
+  } else {
+    hidePreloader()
   }
+  
 })
 
 
@@ -95,6 +98,51 @@ function updateTierField(tierId, field, value) {
   }
 }
 
+const getShopService = async () =>{
+  const market = await exdc.connectToExchangeService(cfans)
+  const subContract = await market.userContracts(exdc.getProvider().address);
+  return {market, subContract}
+}
+
+
+const createSmartService = async (config) => {
+  const excd = await exdc.connectToExchangeToken();
+  const {subContract} = await getShopService()
+  try {
+    const existing = await getMyShop(subContract)
+    console.info('existing', existing)
+    if(existing) {
+      const service = await exdc.connectToExchangeService(existing);
+      return {contract:service, contractAddress:existing};
+    }
+  } catch(err) {
+    console.error(err)
+  }
+  const sig = exdc.getProvider().address
+  const createContract = async () => {
+    console.info(config, sig, subContract)
+    const contractTx = await (
+      (await excd.createServiceUserContract(
+        config.subsPrice,
+        config.coin,
+        1,
+        sig,
+        config.operator,
+        config.ratings,
+        true,
+        config.subsInterval,
+        config.category,
+        subContract,
+      ))
+    ).wait(1);
+    const contractAddress = await getMyShop(subContract)
+    const service = await exdc.connectToExchangeService(contractAddress);
+    return {contract:service, contractAddress};
+  };
+  const service = await createContract();
+  return service;
+};
+
 document.getElementById('add-tier-btn').addEventListener('click', () => addTier('New Tier', '0', '30', ''));
 
 // Form submission
@@ -106,8 +154,10 @@ document.getElementById('shop-config-form').addEventListener('submit', async (e)
   const shopDescription = document.getElementById('shop-description').value;
   const defaultCurrency = document.getElementById('default-currency').value;
   const commissionRate = document.getElementById('commission-rate').value;
-  const avatarUrl  =document.getElementById("profile-avatar").src
-  console.info("avatarUrl",avatarUrl)
+  const avatarUrl  = document.getElementById("profile-avatar").src
+  const formData = new FormData(e.target);
+  const contentData = Object.fromEntries(formData.entries());
+  console.info("contentData",contentData)
   // Prepare shop configuration object
   const shopConfig = {
     name: shopName,
@@ -117,18 +167,33 @@ document.getElementById('shop-config-form').addEventListener('submit', async (e)
     avatarUrl,
     subscriptionTiers: tiers
   };
+  console.info('shopConfig', shopConfig)
 
-  // Here you would typically send this data to your backend or smart contract
-  console.log('Shop configuration to be saved:', shopConfig);
   const cadress = await exdc.currentShopContract(cfans, exdc.getProvider().address)
   const service = await exdc.connectToExchangeService(cadress)
   const abiCoder = new ethers.AbiCoder()
-  const oldData = await getContractData()
-  const json = JSON.stringify({...shopConfig, posts:oldData.posts})
+  let oldData = {}
+  try {
+    oldData = await getContractData()
+  } catch(err) {
+    console.error(err)
+  }
+  if(!oldData || oldData.services?.length === 0) {
+    await createSmartService({
+      coin:exdc.exchangeTokenAddress('137'), 
+      operator:"0x33314eBC03697c1C753E86D85B0dF57FC9891a05",
+      ratings:10, 
+      subsPrice:10,
+      subsInterval:2419200,
+      category:"cryptofans"
+    })
+  }
+  const json = JSON.stringify({...shopConfig, posts:oldData?.posts || []})
   
   const body = abiCoder.encode(["string"], [json])
   await (await service.changeUserData(body)).wait(1)
   // Simulating a successful save
+
   alert('Shop configuration saved successfully!');
   
   // Optionally, redirect to the shop page or refresh the current page
@@ -194,11 +259,13 @@ async function loadExistingConfig() {
         addTier(tier.name, tier.price, tier.duration, tier.benefits);
       });
       tiers = (info?.subscriptionTiers?.length ? info : mockConfig).subscriptionTiers
+      hidePreloader()
       return;
     }
   } catch(err) {
     console.info('error on loading config', err)
   }
+  hidePreloader()
   enableMock()
 }
 

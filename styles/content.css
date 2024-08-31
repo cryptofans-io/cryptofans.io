@@ -3,6 +3,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  padding-bottom: 100px;
 }
 nav {
   display: flex;
@@ -131,4 +132,7 @@ h1 {
   font-size: 1.2em;
   margin-bottom: 30px;
   color: var(--text-color);
+}
+.content-grid {
+  padding-bottom: 100px;
 }
