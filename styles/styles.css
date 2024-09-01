@@ -7,6 +7,8 @@
   --usdc-color: #2775CA;
   --card-background: #27262c;
   --card-border: #383241;
+  --skeleton-background: #3a3a3a;
+  --skeleton-highlight: #444;
 }
 * {
   margin: 0;

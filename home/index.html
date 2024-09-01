@@ -7,14 +7,15 @@
   <link rel="shortcut icon" href="/favicon-250.png">
   <link rel="icon" type="image/png" href="/favicon-250.png">
   <meta name=”robots” content="index, follow">
-	<meta name="img" content="https://cryptofans.io/img/preview.png">
-  <meta property="og:image" content="https://cryptofans.io/img/preview.png">
-  <meta name="twitter:image" content="https://cryptofans.io/img/preview.png">
+	<meta name="img" content="https://cryptofans.io/img/preview.jpg">
+  <meta property="og:image" content="https://cryptofans.io/img/preview.jpg">
+  <meta name="twitter:image" content="https://cryptofans.io/img/preview.jpg">
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&amp;display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.5.2/web3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
-  <script src="https://exdc.cc/sdk.js" type="module"></script>
+  <script id="exdc" src="https://exdc.cc/sdk.js" type="module"></script>
+  <script src="/js/common.js"></script>
   <link rel="stylesheet" href="/styles/styles.css">
   <link rel="stylesheet" href="/styles/dashboard.css">
   <script src="/anim.js"></script>
@@ -25,6 +26,10 @@
     <div class="sidebar">
       <h2 class="hidden-on-mobile">Subscriptions</h2>
       <ul class="chat-list">
+        <!-- Skeleton loading for chats -->
+        <li class="skeleton skeleton-chat"></li>
+        <li class="skeleton skeleton-chat"></li>
+        <li class="skeleton skeleton-chat"></li>
         <!-- Chat list will be dynamically inserted here -->
       </ul>
       <h2 style="display: none;">Your Followers</h2>
@@ -34,91 +39,32 @@
     </div>
     <div class="main-content">
       <div class="timeline">
+        <!-- Skeleton loading for posts -->
+        <div class="skeleton skeleton-post"></div>
+        <div class="skeleton skeleton-post"></div>
+        <div class="skeleton skeleton-post"></div>
         <!-- Posts will be dynamically inserted here -->
       </div>
     </div>
+
+    <div id="metamask-popup" class="metamask-popup">
+      <h3>MetaMask Required</h3>
+      <p>This page requires MetaMask to be enabled. Please install or enable MetaMask to continue.</p>
+      <button onclick="closeMetaMaskPopup()">Got it</button>
+    </div>
+  
+    <div id="overlay" class="overlay"></div>
   </div>
 
   <div id="animation-container"></div>
   <embed type="text/html" src="/components/footer.html" class="embed-footer">
 
   <script>
-    const posts = [
-      {
-        creator: {
-          name: "PixelMaster",
-          avatar: "/img/pixelmaster.webp"
-        },
-        timestamp: "2023-05-15T14:30:00",
-        content: "Just finished my latest pixel art piece! What do you think?",
-        image: "/img/pixel1.webp",
-        likes: 256,
-        comments: 42,
-        price: 50
-      },
-      {
-        creator: {
-          name: "MusicMaven",
-          avatar: "/img/musicmaven.webp"
-        },
-        timestamp: "2023-05-15T12:15:00",
-        content: "New track dropping tomorrow! Get ready for some sick beats 🎵",
-        likes: 189,
-        comments: 31,
-        price: 25
-      },
-      {
-        creator: {
-          name: "CryptoQueen",
-          avatar: "/img/cryptoqueen.webp"
-        },
-        timestamp: "2023-05-15T10:00:00",
-        content: "Just acquired this amazing NFT for my collection. The detail is mind-blowing!",
-        image: "/img/nft1.webp",
-        likes: 412,
-        comments: 73,
-        price: 100
-      },
-      {
-        creator: {
-          name: "VirtualVoyager",
-          avatar: "/img/virtualvoyager.webp"
-        },
-        timestamp: "2023-05-14T22:45:00",
-        content: "Sneak peek of my latest VR experience. Prepare to be transported to another world!",
-        image: "/img/vr1.webp",
-        likes: 301,
-        comments: 58,
-        price: 75
-      },
-      {
-        creator: {
-          name: "CodeCrafter",
-          avatar: "/img/codecrafter.webp"
-        },
-        timestamp: "2023-05-14T20:30:00",
-        content: "Just pushed a major update to my smart contract library. Check it out on GitHub!",
-        likes: 178,
-        comments: 29,
-        price: 40
-      }
-    ];
+    let posts = [];
 
-    const chats = [
-      { name: "PixelMaster", avatar: "/img/pixelmaster.webp", lastMessage: "Thanks for the feedback!" },
-      { name: "MusicMaven", avatar: "/img/musicmaven.webp", lastMessage: "Can't wait for you to hear it!" },
-      { name: "CryptoQueen", avatar: "/img/cryptoqueen.webp", lastMessage: "Let's collab on an NFT project" },
-      { name: "VirtualVoyager", avatar: "/img/virtualvoyager.webp", lastMessage: "The beta version is ready" },
-      { name: "CodeCrafter", avatar: "/img/codecrafter.webp", lastMessage: "Check out this new function" }
-    ];
+    let chats = [];
 
-    const followers = [
-      { name: "CryptoEnthusiast", avatar: "avatars/follower1.jpg" },
-      { name: "ArtLover", avatar: "avatars/follower2.jpg" },
-      { name: "TechGuru", avatar: "avatars/follower3.jpg" },
-      { name: "MusicFan", avatar: "avatars/follower4.jpg" },
-      { name: "NFTCollector", avatar: "avatars/follower5.jpg" }
-    ];
+    const followers = [];
 
     const timeline = document.querySelector('.timeline');
     const chatList = document.querySelector('.chat-list');
@@ -128,20 +74,21 @@
       const postElement = document.createElement('div');
       postElement.classList.add('post');
 
-      postElement.addEventListener("click", ()=>postClick(post))
       const formattedDate = new Date(post.timestamp).toLocaleString();
 
       postElement.innerHTML = `
         <div class="post-header">
-          <div class="post-author">
-          <img class="creator-avatar" src="${post.creator.avatar}" alt="${post.creator.name}'s avatar">
-          <span class="creator-name">${post.creator.name}</span>
-          </div>
-          <span class="post-timestamp">${formattedDate}</span>
+          <a href="/creator/?id=${post.creator.id}">
+            <div class="post-author">
+            <img class="creator-avatar" src="${post.creator.avatarUrl}" alt="${post.creator.name}'s avatar">
+            <span class="creator-name">${post.creator.name}</span>
+            </div>
+          </a>
+          <span class="post-timestamp">${post["content-publish-date"]}</span>
         </div>
         <div class="post-content">
-          <p>${post.content}</p>
-          ${post.image ? `<img class="post-image" src="${post.image}" alt="Post image">` : ''}
+          <p>${post.description}</p>
+          ${post.src ? `<img class="post-image" src="${post.src}" alt="Post image">` : ''}
         </div>
         <div class="post-actions hidden">
           <button class="action-btn like-btn">
@@ -163,24 +110,16 @@
       return postElement;
     }
 
-    function postClick(post) {
-      console.info('clicked on post', post)
-      window.location.pathname = "/creator"
-    }
 
-    function chatClick(chat) {
-      console.info('clicked on chat', chat)
-      window.location.pathname = "/creator"
-    }
 
     function createChatElement(chat) {
       const chatElement = document.createElement('li');
       chatElement.classList.add('chat-item');
-      
-      chatElement.addEventListener("click", ()=>chatClick(chat))
 
       chatElement.innerHTML = `
-        <img class="chat-avatar" src="${chat.avatar}" alt="${chat.name}'s avatar">
+        <a href="/creator/?id=${chat.id}">
+          <img class="chat-avatar" src="${chat.avatar}" alt="${chat.name}'s avatar">
+        </a>
         <div class="hidden-on-mobile">
           <div class="chat-name">${chat.name}</div>
           <div class="chat-preview">${chat.lastMessage}</div>
@@ -198,39 +137,79 @@
       `;
       return followerElement;
     }
+    const loadData = () => {
 
-    posts.forEach(post => {
-      const postElement = createPostElement(post);
-      timeline.appendChild(postElement);
-    });
+    }
 
-    chats.forEach(chat => {
-      const chatElement = createChatElement(chat);
-      chatList.appendChild(chatElement);
-    });
+    function closeMetaMaskPopup() {
+      document.getElementById('metamask-popup').style.display = 'none';
+      document.getElementById('overlay').style.display = 'none';
+    }
+    const EXDCscript = document.querySelector('#exdc');
+    EXDCscript.addEventListener('load', function() {
+      window.exdc = new EXDC_SDK()
+      exdc.checkMetaMask()
+      .then(async (pro)=>{
+        closeMetaMaskPopup()
+        console.info('pro', pro)
+        cfans = await exdc.getCryptoFansAddress()
+        const mservice = await exdc.connectToExchangeService(cfans)
+        console.info('mservice', mservice)
+        // const services = await mservice.getServices()
+        // console.info("services", services)
+        const user = exdc.getProvider().address
+      
 
-    followers.forEach(follower => {
-      const followerElement = createFollowerElement(follower);
-      followersList.appendChild(followerElement);
-    });
+        const authors = await(await fetch("https://cryptofans.io/api/home")).json()
+        const creators = (await Promise.all(authors.map(async (a)=>({
+          ...a.n, 
+          avatar:a.n?.avatarUrl, 
+          hiddenContent:true, 
+          posts:a.n?.posts?.length || 0,
+          followers:a.n?.followers || 0,
+          subscriptionPrice:a.n?.subscriptionTiers[0].price,
+          id:a.id,
+          services: (await (await exdc.connectToExchangeService(a.id)).getServices()).toArray(),
+          lastMessage: ""
+        })))) 
+        console.info('creators', creators)
+        const chats = (await Promise.all(creators.map(async (creator)=>{
+          const isMatched = (await Promise.all(creator.services?.map(async (s)=>{
+            const userContractId = await exdc.currentShopContract(s, user)
+            console.info('userContractId', userContractId)
+            return userContractId
+          }) || []))?.filter((i)=>i!==address0)
+          if(isMatched.length > 0)
+            return creator
+        }))).filter(i=>i)
+        console.info('chats', chats)
 
+        chatList.innerHTML = ""
+        chats.forEach(chat => {
+          const chatElement = createChatElement(chat);
+          chatList.appendChild(chatElement);
+        });
 
-    // Web3 integration
-    window.addEventListener('load', async () => {
-      if (window.ethereum) {
-        window.web3 = new Web3(ethereum);
-        try {
-          await ethereum.enable();
-          console.log("Web3 initialized!");
-        } catch (error) {
-          console.error("User denied account access");
-        }
-      } else if (window.web3) {
-        window.web3 = new Web3(web3.currentProvider);
-        console.log("Web3 initialized!");
-      } else {
-        console.log('Non-Ethereum browser detected. Consider trying MetaMask!');
-      }
-    });
+        posts = (await Promise.all(
+          chats
+          .map(async chat=> await (await fetch("https://cryptofans.io/api/creator?id="+chat.id))
+          .json()))
+        )
+        console.info('posts', posts)
+        posts = posts.map(creator=>creator?.n.posts?.map(p=>({...p, creator:{...creator, ...creator.n}})) || [])
+        .flat()
+        .sort((a,b)=>
+          new Date(a["content-publish-date"]).valueOf() - new Date(b["content-publish-date"]).valueOf()
+        )
+        .reverse()
+        console.info('posts', posts)
+        timeline.innerHTML = ""
+        posts.forEach(post => {
+          const postElement = createPostElement(post);
+          timeline.appendChild(postElement);
+        });
+      })
+    })
+
   </script>
 </body></html>

@@ -1,5 +1,5 @@
 let cfans = ""
-
+const address0 = "0x0000000000000000000000000000000000000000"
 const validateSubscription = async () => {
   try {
     cfans = await exdc.getCryptoFansAddress()

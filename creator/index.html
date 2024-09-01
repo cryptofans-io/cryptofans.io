@@ -7,18 +7,18 @@
   <link rel="shortcut icon" href="/favicon-250.png">
   <link rel="icon" type="image/png" href="/favicon-250.png">
   <meta name=”robots” content="index, follow">
-	<meta name="img" content="https://cryptofans.io/img/preview.png">
-  <meta property="og:image" content="https://cryptofans.io/img/preview.png">
-  <meta name="twitter:image" content="https://cryptofans.io/img/preview.png">
+	<meta name="img" content="https://cryptofans.io/img/preview.jpg">
+  <meta property="og:image" content="https://cryptofans.io/img/preview.jpg">
+  <meta name="twitter:image" content="https://cryptofans.io/img/preview.jpg">
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600&amp;display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.5.2/web3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
   <script id="exdc" src="https://exdc.cc/sdk.js" type="module"></script>
+  <script src="/js/common.js"></script>
   <link rel="stylesheet" href="/styles/styles.css">
   <link rel="stylesheet" href="/styles/creator.css">
   <script src="/anim.js"></script>
-  <script src="/js/common.js"></script>
 </head>
 <body>
   <embed type="text/html" src="/components/nav.html" class="embed-nav">
@@ -130,40 +130,46 @@
       console.info('creator', info)
       document.getElementById('profile-name').innerHTML = info?.n.name || "";
       document.getElementById('profile-followers').innerHTML = info?.n.followers || 0;
-      // document.getElementById('shop-description').value = info?.n.description || "";
       document.getElementById('profile-posts').innerHTML = info?.n.posts?.length || 0
-      document.getElementById('profile-subscriptions').innerHTML = info.n?.subscriptionTiers[0].price || 30
-      document.getElementById('subs-price').innerHTML = info.n?.subscriptionTiers[0].price || 30
-      document.getElementById('timeline').innerHTML = info.n?.posts?.map(i=>generatePost(i)).reverse().join("") || ""
       const avatar = document.getElementById("profile-avatar")
       if(info.n.avatarUrl) {
           avatar.src = ((url)=>url)(info.n.avatarUrl);
       }
+      const price = info.n?.subscriptionTiers[0].price || 10
+      const subsprice = document.getElementById('subs-price')
+      document.getElementById('profile-subscriptions').innerHTML = price
+      if(subsprice)
+        subsprice.innerHTML = price
+      const timeline = info.n?.posts?.map(post=>generatePost(post)).reverse().join("") || ""
+      // console.info("timeline", timeline, info.n.posts)
+      document.getElementById('timeline').innerHTML = timeline
       return true;
     })
     .then(()=>hidePreloader())
-    .catch(()=>hidePreloader())
-    const generatePost = (post) => {
-      return `
+    .catch((err)=>{
+      console.error("error", err)
+      hidePreloader()
+    })
+    const generatePost = (post) => post?.title === undefined ? "" : `
       <div class="post">
         <div class="post-header">
-          <h3>${post.title}</h3>
+          <h3>${post?.title}</h3>
           <span class="post-date">${post['content-publish-date']}</span>
         </div>
         <div class="post-content">
-          <p>${post.description}</p>
-          <img src="${post.src}" alt="${post.title}" class="post-image">
+          <p>${post?.description}</p>
+          <img src="${post?.src}" alt="${post?.title}" class="post-image">
         </div>
         <div class="post-footer">
           <div class="post-actions">
             <!-- <button class="action-btn">❤️ 1.2k</button>
             <button class="action-btn">💬 234</button> -->
-            <button class="action-btn" onclick="onshare(${post.id})">🔗 Share</button>
+            <button class="action-btn" onclick="onshare(${post?.id})">🔗 Share</button>
           </div>
           <span>Free Content</span>
         </div>
       </div>`
-    }
+    
     const subBtn = document.querySelector('.subscribe-btn')
     const EXDCscript = document.querySelector('#exdc');
     EXDCscript.addEventListener('load', function() {
@@ -180,19 +186,21 @@
     })
     // Subscribe button functionality
     subBtn.addEventListener('click', async () => {
-      if (window.web3) {
-        try {
-          const subId = await getMyShop(id)
-          const smart = await exdc.buyServiceSmart(subId)
-          const isServiceValid = await exdc.checkServiceValid(subId)
+      try {
+        const subId = await getMyShop(id)
+        const smart = await exdc.buyServiceSmart(subId)
+        const isServiceValid = await exdc.checkServiceValid(subId)
+        
+        if(isServiceValid === true) {
           alert('Subscription successful. Please reload page to view hidden content.');
-        } catch (error) {
-          console.error('Subscription failed:', error);
-          alert('Subscription failed. Please try again.');
+          return;
         }
-      } else {
-        alert('Please connect your Web3 wallet to subscribe.');
+
+      } catch (error) {
+        console.error('Subscription failed:', error);
+        alert(err?.data.message || err?.message || err)
       }
+      alert('Subscription failed. Please try again.');
     });
   </script>
 </body></html>
