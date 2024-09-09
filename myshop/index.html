@@ -30,7 +30,7 @@
   </div>
   <div class="container">
 
-    <div class="overlay" id="pay-modal">
+    <div class="overlay hidden" id="pay-modal">
       <div class="popup">
         <h2>Buy Subscription</h2>
         <p>10 EXDC / 28 days + 10 EXDC to create a new contract</p>
@@ -41,12 +41,24 @@
 
     <h1>Shop Configuration</h1>
     
+    <section id="promo" class="promo">
+      <div class="promo-content">
+        <h2>Limited Time Offer for New Creators!</h2>
+        <p class="promo-details">The first 1000 creators get <span class="highlight">100,000 EXDC</span> every month until the end of 2024!</p>
+        <!-- <button class="cta-button promo-cta">Claim Your EXDC Tokens</button> -->
+      </div>
+      <div class="promo-animation">
+        <div class="token-shower"></div>
+      </div>
+    </section>
+
     <form class="shop-config" id="shop-config-form">
       <img src="" alt="avatar" id="profile-avatar" class="profile-avatar">
       <div class="form-group">
         <label for="file-upload" class="file-input-label">Shop Avatar</label>
         <input type="file" id="file-upload" name="file-upload" onchange="uploadFile(this)" accept="image/png, image/jpeg, image/webp">
       </div>
+      
       <div class="form-group">
         <label for="shop-name">Shop Name</label>
         <input type="text" id="shop-name" name="shop-name" required>
@@ -58,18 +70,11 @@
         <textarea id="shop-description" name="shop-description" rows="4" required></textarea>
       </div>
 
-      <div class="form-group">
-        <label for="default-currency">Currency</label>
-        <select id="default-currency" name="default-currency" required>
-          <option value="EXDC">EXDC</option>
-        </select>
-      </div>
-
       <div class="subscription-tiers">
         <div class="tiers-list">
           <h2>Subscription Tiers</h2>
           <div id="tiers-list-container"></div>
-          <button type="button" class="btn add-tier-btn hidden" id="add-tier-btn">Add Tier</button>
+          <button type="button" class="btn add-tier-btn" id="add-tier-btn">Add Tier</button>
         </div>
         <div class="tier-details">
           <h2>Tier Details</h2>

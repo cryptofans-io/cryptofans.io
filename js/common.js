@@ -1,12 +1,13 @@
 let cfans = ""
 const address0 = "0x0000000000000000000000000000000000000000"
+let isServiceValid = false;
 const validateSubscription = async () => {
   try {
     cfans = await exdc.getCryptoFansAddress()
     const info = await exdc.getServicePaymentInfo(cfans)
     console.info('info', info)
     // console.info('subscription', subscription)
-    const isServiceValid = await exdc.checkServiceValid(cfans)
+    isServiceValid = await exdc.checkServiceValid(cfans)
     const payModal = document.getElementById("pay-modal")
     if(isServiceValid === true && payModal) {
       payModal.className = "hidden";
@@ -84,4 +85,16 @@ const getMyShop = async (subContract) => {
   const sub = await exdc.connectToExchangeService(subContract);
   const contractAddress = await sub.services(0)
   return contractAddress
+}
+
+async function switchNet(chainId) {
+  await window.ethereum.request({
+    method: 'wallet_switchEthereumChain',
+    params: [
+      {
+        chainId,
+      },
+    ],
+  });
+  window.parent.location.reload()
 }

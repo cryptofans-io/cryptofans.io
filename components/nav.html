@@ -11,7 +11,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.5.2/web3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
-    <script src="https://exdc.cc/sdk.js" type="module"></script>
+    <script src="https://exdc.cc/sdk.js" id="exdc" type="module"></script>
+    <script src="/js/common.js"></script>
     <link rel="stylesheet" href="/styles/styles.css">
     <style>
     
@@ -53,7 +54,22 @@
   </head>
 <body>
 <nav>
-  <a href="/" target="_top"><div class="logo">CryptoFans</div></a>
+  <div class="logo-section">
+    <a href="/" target="_top"><div class="logo">CryptoFans</div></a>
+    <div class="chain-selector hidden" id="chain-selector">
+      <select id="chain-select" onchange="onChangeNetwork(this)">
+        <option value="0x89">
+          <img src="https://cryptologos.cc/logos/polygon-matic-logo.svg" alt="Polygon logo" width="20" height="20">
+          Polygon
+        </option>
+        <option value="0x38">
+          <img src="https://cryptologos.cc/logos/bnb-bnb-logo.svg" alt="BNB Chain logo" width="20" height="20">
+          BNB Chain
+        </option>
+      </select>
+    </div>
+  </div>
+</div>
   <div class="nav-links" target="_top">
     <a href="/home" target="_top">Home</a>
     <a href="/" target="_top">Creators</a>
@@ -62,6 +78,23 @@
     <!-- <a href="/payouts" target="_top">Payouts</a> -->
   </div>
 </nav>
+<script>
+  const onChangeNetwork = async (e) => switchNet(e.value)
 
+  const EXDCscript = document.querySelector('#exdc');
+  const chainSelector = document.getElementById("chain-selector")
+  const chainSelect = document.getElementById("chain-select")
+  EXDCscript.addEventListener('load', function() {
+    window.exdc = new EXDC_SDK()
+    exdc.checkMetaMask().then(async (data)=>{
+      const netToId = {"56":"0x38", "137":"0x89"}
+      const network = await window.ethereum.request({
+        method: 'net_version',
+      });
+      chainSelect.value = netToId[network]
+      chainSelector.className = "chain-selector"
+    })
+  })
+</script>
 </body>
 </html>

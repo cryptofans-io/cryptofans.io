@@ -1,16 +1,19 @@
 const buyButton = document.getElementById("buyButton")
-buyButton.addEventListener("click", async ()=>{
+const payModal = document.getElementById("pay-modal")
+
+const buyServiceAction = async () => {
   const smart = await exdc.buyServiceSmart(cfans)
-  const isServiceValid = await exdc.checkServiceValid(cfans)
+  isServiceValid = await exdc.checkServiceValid(cfans)
   if(isServiceValid === true) {
-    document.getElementById("pay-modal").className = "hidden";
+    payModal.className = "hidden";
     // Load existing configuration when the page loads
     loadExistingConfig();
   } else {
     hidePreloader()
   }
-  
-})
+}
+
+buyButton.addEventListener("click", async ()=>buyServiceAction())
 
 
 
@@ -46,41 +49,49 @@ function removeTier(tierId) {
 
 function renderTiersList() {
   const container = document.getElementById('tiers-list-container');
+  
   container.innerHTML = tiers.map(tier => `
-    <div class="tier-item ${tier.id === selectedTierId ? 'active' : ''}" onclick="selectTier('${tier.id}')">
+    <div class="tier-item ${(tier.id || 'tier-0') === selectedTierId ? 'active' : ''}" onclick="selectTier('${tier.id || 'tier-0'}')">
       ${tier.name}
     </div>
   `).join('');
 }
 
-function renderTierDetails(tierId) {
+function renderTierDetails(tierId = 'tier-0') {
   const container = document.getElementById('tier-details-container');
   if (!tierId) {
     container.innerHTML = '<p>Select a tier to view details</p>';
     return;
   }
 
-  const tier = tiers.find(t => t.id === tierId);
+  const tier = tiers.find(t => (t.id || 'tier-0') === tierId);
   if (!tier) return;
+  
 
   container.innerHTML = `
     <div class="form-group">
-      <label for="${tier.id}-name">Tier Name</label>
-      <input type="text" id="${tier.id}-name" value="${tier.name}" onchange="updateTierField('${tier.id}', 'name', this.value)">
+      <label for="${tierId}-name">Tier Name</label>
+      <input type="text" id="${tierId}-name" value="${tier.name}" onchange="updateTierField('${tierId}', 'name', this.value)">
     </div>
     <div class="form-group">
-      <label for="${tier.id}-price">Price</label>
-      <input type="number" id="${tier.id}-price" value="${tier.price}" onchange="updateTierField('${tier.id}', 'price', this.value)">
+      <label for="${tierId}-price">Price</label>
+      <input type="number" id="${tierId}-price" value="${tier.price}" onchange="updateTierField('${tierId}', 'price', this.value)">
     </div>
     <div class="form-group">
-      <label for="${tier.id}-duration">Duration (days)</label>
-      <input type="number" id="${tier.id}-duration" value="${tier.duration}" onchange="updateTierField('${tier.id}', 'duration', this.value)">
+      <label for="${tierId}-duration">Duration (days)</label>
+      <input type="number" id="${tierId}-duration" value="${tier.duration}" onchange="updateTierField('${tierId}', 'duration', this.value)">
     </div>
     <div class="form-group">
-      <label for="${tier.id}-benefits">Benefits</label>
-      <textarea id="${tier.id}-benefits" rows="3" onchange="updateTierField('${tier.id}', 'benefits', this.value)">${tier.benefits}</textarea>
+      <label for="${tierId}-benefits">Benefits</label>
+      <textarea id="${tierId}-benefits" rows="3" onchange="updateTierField('${tierId}', 'benefits', this.value)">${tier.benefits}</textarea>
     </div>
-    <button type="button" class="btn btn-secondary hidden" onclick="removeTier('${tier.id}')">Remove Tier</button>
+    <div class="form-group">
+      <label for="${tierId}-currency">Currency</label>
+      <select id="${tierId}-currency" name="${tierId}-currency" required onchange="updateTierField('${tierId}', 'currency', this.value)">
+        <option value="EXDC">EXDC</option>
+      </select>
+    </div>
+    <button type="button" class="btn btn-secondary" onclick="removeTier('${tierId}')">Remove Tier</button>
   `;
 }
 
@@ -152,23 +163,24 @@ document.getElementById('shop-config-form').addEventListener('submit', async (e)
   // Get form data
   const shopName = document.getElementById('shop-name').value;
   const shopDescription = document.getElementById('shop-description').value;
-  const defaultCurrency = document.getElementById('default-currency').value;
   const commissionRate = document.getElementById('commission-rate').value;
   const avatarUrl  = document.getElementById("profile-avatar").src
   const formData = new FormData(e.target);
+  if(!isServiceValid) {
+    payModal.className = "overlay"
+    return;
+  }
   const contentData = Object.fromEntries(formData.entries());
   console.info("contentData",contentData)
   // Prepare shop configuration object
   const shopConfig = {
     name: shopName,
     description: shopDescription,
-    defaultCurrency,
     commissionRate,
     avatarUrl,
     subscriptionTiers: tiers
   };
   console.info('shopConfig', shopConfig)
-
   const cadress = await exdc.currentShopContract(cfans, exdc.getProvider().address)
   const service = await exdc.connectToExchangeService(cadress)
   const abiCoder = new ethers.AbiCoder()
@@ -191,13 +203,10 @@ document.getElementById('shop-config-form').addEventListener('submit', async (e)
   const json = JSON.stringify({...shopConfig, posts:oldData?.posts || []})
   
   const body = abiCoder.encode(["string"], [json])
-  await (await service.changeUserData(body)).wait(1)
-  // Simulating a successful save
 
-  alert('Shop configuration saved successfully!');
+  await (await service.changeUserData(body)).wait(1)
   
-  // Optionally, redirect to the shop page or refresh the current page
-  // window.location.href = '/shop';
+  alert('Shop configuration saved successfully!');
 });
 
 // Cancel button
@@ -210,9 +219,14 @@ document.getElementById('cancel-btn').addEventListener('click', () => {
 const mockConfig = {
   name: "",
   description: "",
-  defaultCurrency: "USDC",
   subscriptionTiers: [
-    {name: "Paid", price: 10, duration: 28, benefits: "Access to basic content"}
+    {
+      name: "Basic", 
+      price: 5, 
+      duration: 28, 
+      benefits: "Access to basic content and updates",
+      currency: "EXDC"
+    }
   ]
 };
 // Load existing shop configuration
@@ -221,7 +235,7 @@ const enableMock = () => {
   // Populate form fields
   document.getElementById('shop-name').value = mockConfig.name;
   document.getElementById('shop-description').value = mockConfig.description;
-  document.getElementById('default-currency').value = mockConfig.defaultCurrency;
+  // document.getElementById('default-currency').value = mockConfig.defaultCurrency;
 
   // Add subscription tiers
   mockConfig.subscriptionTiers.forEach(tier => {
@@ -249,7 +263,7 @@ async function loadExistingConfig() {
       const info = JSON.parse(body)
       document.getElementById('shop-name').value = info?.name || "";
       document.getElementById('shop-description').value = info?.description || "";
-      document.getElementById('default-currency').value = info?.defaultCurrency || "USDC";
+      // document.getElementById('default-currency').value = info?.defaultCurrency || "USDC";
       const avatar = document.getElementById("profile-avatar")
       if(info.avatarUrl) {
           avatar.src = ((url)=>url)(info.avatarUrl);
@@ -259,6 +273,7 @@ async function loadExistingConfig() {
         addTier(tier.name, tier.price, tier.duration, tier.benefits);
       });
       tiers = (info?.subscriptionTiers?.length ? info : mockConfig).subscriptionTiers
+      
       hidePreloader()
       return;
     }

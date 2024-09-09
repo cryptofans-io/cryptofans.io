@@ -27,6 +27,9 @@ body, html {
   height: 100vh;
   padding: 20px;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 .hidden {
   display: none !important;
@@ -44,6 +47,7 @@ h1 {
   z-index: 10;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
+  width: 100%;
 }
 .creator-card {
   z-index: 10;
@@ -144,7 +148,7 @@ h1 {
   z-index: 2;
 }
 .hero {
-  height: 40vh;
+  height: 80vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -261,4 +265,95 @@ h1 {
   position: absolute;
   bottom: -20px;
   left: 20px;
+}
+.chain-selector {
+  margin-left: 20px;
+}
+#chain-select {
+  background-color: var(--card-background);
+  color: var(--text-color);
+  border: 1px solid var(--card-border);
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 14px;
+  border-color: var(--secondary-color);
+}
+#chain-select option {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+#chain-select option img {
+  margin-right: 5px;
+}
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+.logo {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+.promo {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border-radius: 20px;
+  padding: 40px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  position: relative;
+  overflow: hidden;
+}
+.promo-content {
+  position: relative;
+  z-index: 2;
+}
+.promo h2 {
+  color: #fff;
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+.promo-details {
+  font-size: 24px;
+  color: #fff;
+  margin-bottom: 30px;
+}
+.highlight {
+  font-weight: 600;
+  color: #FFD700;
+}
+.promo-cta {
+  background-color: #fff;
+  color: var(--primary-color);
+}
+.promo-cta:hover {
+  background-color: var(--accent-color);
+  color: #fff;
+}
+.promo-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.token-shower {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.cta-button {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  border: none;
+  padding: 12px 24px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.cta-button:hover {
+  background-color: var(--secondary-color);
 }

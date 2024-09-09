@@ -24,9 +24,27 @@
     <h1>Connect with Your Favorite Creators</h1>
     <p>Support creators, unlock exclusive content, and join a thriving anonymous community powered by the Polygon network.</p>
     <a href="/myshop/" class="view-timeline-btn">Become a Creator</a>
+
+    <section id="promo" class="promo">
+      <div class="promo-content">
+        <h2>Limited Time Offer for New Creators!</h2>
+        <p class="promo-details">The first 1000 creators get <span class="highlight">100,000 EXDC</span> every month until the end of 2024!</p>
+        <a href="/myshop/"><button class="cta-button promo-cta">Claim Your EXDC Tokens</button></a>
+      </div>
+      <div class="promo-animation">
+        <div class="token-shower"></div>
+      </div>
+    </section>
   </div>    
 
+
   <div class="category-container">
+
+    <div class="loader" id="pancake-preloader">
+      <div class="loader-pancake"></div>
+      <div class="loader-coin"></div>
+    </div>
+
     <div class="creator-grid">
       <!-- Creator cards will be dynamically inserted here -->
     </div>
@@ -79,7 +97,7 @@
         subscriptionPrice:a.n?.subscriptionTiers[0].price,
         id:a.id
       }))
-
+      document.getElementById("pancake-preloader").className = "hidden";
       creators.forEach(creator => {
         const creatorCard = createCreatorCard(creator);
         creatorGrid.appendChild(creatorCard);
